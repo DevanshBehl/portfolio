@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import type { Easing } from 'framer-motion'
 import { Spotlight } from '@/components/ui/spotlight-new'
+import DotGrid from '@/components/ui/dot-grid'
 
 /* Shared cubic-bezier easing for a premium feel */
 const ease: Easing = [0.16, 1, 0.3, 1]
@@ -24,17 +25,13 @@ const Hero = () => {
                 xOffset={100}
             />
 
-            {/* Subtle grid pattern overlay */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ duration: 2 }}
-                className="absolute inset-0"
-                style={{
-                    backgroundImage:
-                        'linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)',
-                    backgroundSize: '60px 60px',
-                }}
+            {/* Interactive dot matrix pattern — dots displace on hover */}
+            <DotGrid
+                gap={24}
+                dotRadius={1}
+                dotColor="rgba(255,255,255,0.15)"
+                influenceRadius={120}
+                pushStrength={40}
             />
 
             <div className="relative z-10 max-w-4xl mx-auto text-center">
