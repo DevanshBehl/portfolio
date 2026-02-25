@@ -119,69 +119,227 @@ const BottomLayerGrid = memo(() => {
 })
 
 /* ═══════════════════════════════════════════════════════════════════
-   LASER BEAM & APP WINDOW MOCKUP
+   FLOWING LIGHT BEAM — Natural cascading light streams
    ═══════════════════════════════════════════════════════════════════ */
 
-const photonParticles = Array.from({ length: 30 }).map((_, i) => ({
+// SVG path definitions — organic bezier curves that fan out at top, converge at bottom
+const lightPaths = [
+    // Center main stream
+    "M 500 0 C 500 200, 500 400, 500 700 C 500 850, 500 950, 500 1100",
+    // Left-curving stream 1
+    "M 460 0 C 440 180, 420 350, 460 550 C 480 650, 490 800, 500 1100",
+    // Right-curving stream 1
+    "M 540 0 C 560 180, 580 350, 540 550 C 520 650, 510 800, 500 1100",
+    // Left-curving stream 2 (wider)
+    "M 400 0 C 370 150, 350 300, 410 500 C 450 620, 480 780, 500 1100",
+    // Right-curving stream 2 (wider)
+    "M 600 0 C 630 150, 650 300, 590 500 C 550 620, 520 780, 500 1100",
+    // Far left ethereal stream
+    "M 340 0 C 300 120, 280 280, 370 480 C 420 580, 470 760, 500 1100",
+    // Far right ethereal stream
+    "M 660 0 C 700 120, 720 280, 630 480 C 580 580, 530 760, 500 1100",
+    // Wispy left tendril
+    "M 420 0 C 380 100, 360 250, 430 450 C 470 580, 490 820, 500 1100",
+    // Wispy right tendril
+    "M 580 0 C 620 100, 640 250, 570 450 C 530 580, 510 820, 500 1100",
+]
+
+// Flow particle definitions for organic motion along paths
+// Reduced particle count for better perf while keeping visual density
+const flowParticles = Array.from({ length: 14 }).map((_, i) => ({
     id: i,
-    delay: Math.random() * 3,
-    duration: 3 + Math.random() * 4, // 3 to 7 seconds (slower)
-    offsetX: (Math.random() - 0.5) * 16, // scattered up to 8px from center
-    size: 1 + Math.random() * 2, // 1px to 3px (smaller)
-    opacity: 0.4 + Math.random() * 0.6,
-}));
+    pathIndex: i % lightPaths.length,
+    delay: Math.random() * 6,
+    duration: 4 + Math.random() * 5,
+    size: 2 + Math.random() * 3,
+    opacity: 0.5 + Math.random() * 0.5,
+}))
 
-const LaserBeam = memo(() => {
+const FlowingLightBeam = memo(() => {
     return (
-        <div className="absolute bottom-[100%] left-1/2 -translate-x-1/2 w-[100vw] max-w-7xl h-[200vh] pointer-events-none z-10 flex flex-col items-center justify-start overflow-visible">
-            {/* The primary vertical laser line */}
-            <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "100%", opacity: 1 }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-                className="w-[4px] bg-[#fdfbf7] shadow-[0_0_30px_10px_rgba(253,251,247,0.6)] origin-top"
-                style={{
-                    background: "linear-gradient(to bottom, transparent, rgba(253,251,247,0.8) 20%, rgba(253,251,247,1) 80%, rgba(255,255,255,1))"
-                }}
-            />
+        <div
+            className="absolute bottom-[100%] left-1/2 -translate-x-1/2 pointer-events-none z-10 overflow-visible"
+            style={{ width: '100vw', maxWidth: '80rem', height: '200vh', willChange: 'transform' }}
+        >
+            <svg
+                viewBox="0 0 1000 1100"
+                preserveAspectRatio="none"
+                className="absolute inset-0 w-full h-full overflow-visible"
+                style={{ willChange: 'transform' }}
+            >
+                <defs>
+                    {/* Bright warm white gradient — increased intensity */}
+                    <linearGradient id="beam-gradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="rgba(255,252,245,0)" />
+                        <stop offset="10%" stopColor="rgba(255,252,245,0.7)" />
+                        <stop offset="40%" stopColor="rgba(255,255,255,1)" />
+                        <stop offset="75%" stopColor="rgba(255,252,245,0.9)" />
+                        <stop offset="100%" stopColor="rgba(255,255,255,1)" />
+                    </linearGradient>
 
-            {/* Photon Particles Traveling Downwards */}
-            {photonParticles.map((p) => (
+                    {/* Warm glow gradient — boosted opacity */}
+                    <linearGradient id="beam-glow-gradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="rgba(255,250,240,0)" />
+                        <stop offset="15%" stopColor="rgba(255,250,240,0.3)" />
+                        <stop offset="50%" stopColor="rgba(255,252,248,0.55)" />
+                        <stop offset="80%" stopColor="rgba(255,250,240,0.3)" />
+                        <stop offset="100%" stopColor="rgba(255,255,255,0.6)" />
+                    </linearGradient>
+
+                    {/* Outer warm white glow — more intense */}
+                    <linearGradient id="beam-outer-glow" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="rgba(255,248,235,0)" />
+                        <stop offset="25%" stopColor="rgba(255,248,235,0.12)" />
+                        <stop offset="55%" stopColor="rgba(255,250,240,0.2)" />
+                        <stop offset="100%" stopColor="rgba(255,252,245,0.3)" />
+                    </linearGradient>
+
+                    {/* Lightweight glow filter — optimized stdDeviation */}
+                    <filter id="path-glow" x="-30%" y="-5%" width="160%" height="110%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+
+                    {/* Medium glow — reduced from 18 to 8 */}
+                    <filter id="heavy-glow" x="-60%" y="-5%" width="220%" height="110%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="8" />
+                    </filter>
+
+                    {/* Atmospheric glow — reduced from 35 to 12 */}
+                    <filter id="atmospheric-glow" x="-80%" y="-5%" width="260%" height="110%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="12" />
+                    </filter>
+                </defs>
+
+                {/* ── Layer 1: Warm atmospheric glow (reduced to 3 paths for perf) ── */}
+                {lightPaths.slice(0, 3).map((d, i) => (
+                    <path
+                        key={`atmo-${i}`}
+                        d={d}
+                        fill="none"
+                        stroke="url(#beam-outer-glow)"
+                        strokeWidth={50 - i * 8}
+                        strokeLinecap="round"
+                        filter="url(#atmospheric-glow)"
+                        className="flowing-beam-atmospheric"
+                        style={{
+                            opacity: 0.5 - i * 0.1,
+                            animationDelay: `${i * 0.3}s`,
+                        }}
+                    />
+                ))}
+
+                {/* ── Layer 2: Warm glow halos — boosted intensity ── */}
+                {lightPaths.map((d, i) => (
+                    <path
+                        key={`glow-${i}`}
+                        d={d}
+                        fill="none"
+                        stroke="url(#beam-glow-gradient)"
+                        strokeWidth={16 - i * 0.8}
+                        strokeLinecap="round"
+                        filter="url(#heavy-glow)"
+                        className="flowing-beam-glow"
+                        style={{
+                            opacity: 0.6 - i * 0.04,
+                            animationDelay: `${i * 0.4}s`,
+                        }}
+                    />
+                ))}
+
+                {/* ── Layer 3: Core bright streams — intensified ── */}
+                {lightPaths.map((d, i) => (
+                    <path
+                        key={`core-${i}`}
+                        d={d}
+                        fill="none"
+                        stroke="url(#beam-gradient)"
+                        strokeWidth={i < 3 ? 3.5 : i < 5 ? 2.5 : 1.5}
+                        strokeLinecap="round"
+                        filter="url(#path-glow)"
+                        className="flowing-beam-core"
+                        style={{
+                            animationDelay: `${i * 0.2}s`,
+                            opacity: i < 3 ? 1 : i < 5 ? 0.8 : 0.5,
+                        }}
+                    />
+                ))}
+
+                {/* ── Layer 4: Bright inner line — pure white core ── */}
+                {lightPaths.slice(0, 5).map((d, i) => (
+                    <path
+                        key={`inner-${i}`}
+                        d={d}
+                        fill="none"
+                        stroke="rgba(255,255,255,1)"
+                        strokeWidth={i < 3 ? 1.5 : 0.8}
+                        strokeLinecap="round"
+                        className="flowing-beam-inner"
+                        style={{ animationDelay: `${i * 0.15}s` }}
+                    />
+                ))}
+            </svg>
+
+            {/* Flowing particles along the streams */}
+            {flowParticles.map((p) => (
                 <motion.div
                     key={p.id}
-                    className="absolute top-0 rounded-full bg-[#fdfbf7]"
+                    className="absolute rounded-full bg-[#fdfbf7]"
                     style={{
                         width: p.size,
-                        height: p.size, // Perfect spheres
-                        left: `calc(50% + ${p.offsetX}px)`,
-                        boxShadow: "0 0 6px 1px rgba(253,251,247, 0.8)",
+                        height: p.size,
+                        left: `${42 + Math.random() * 16}%`,
+                        top: 0,
+                        boxShadow: `0 0 ${4 + p.size * 2}px ${p.size}px rgba(253,251,247,0.8)`,
                     }}
                     animate={{
-                        y: ["0vh", "150vh"],
-                        opacity: [0, p.opacity, p.opacity, p.opacity, 0],
-                        scale: [0.5, 1, 1, 0.5],
+                        y: ['0vh', '180vh'],
+                        x: [
+                            `${(Math.random() - 0.5) * 60}px`,
+                            `${(Math.random() - 0.5) * 40}px`,
+                            `${(Math.random() - 0.5) * 20}px`,
+                            '0px',
+                        ],
+                        opacity: [0, p.opacity, p.opacity, p.opacity * 0.8, 0],
+                        scale: [0.3, 1, 1, 0.5],
                     }}
                     transition={{
                         duration: p.duration,
                         repeat: Infinity,
                         delay: p.delay,
-                        ease: "linear",
+                        ease: 'linear',
                     }}
                 />
             ))}
 
-            {/* The warm radial flare centered perfectly behind the canvas */}
+            {/* Convergence aura — radial glow where beams meet the canvas */}
             <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1.5, delay: 0.8, ease: "easeOut" }}
-                className="w-[100vw] sm:w-[50rem] h-[30rem] sm:h-[50rem] absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none"
+                transition={{ duration: 2, delay: 0.5, ease: 'easeOut' }}
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none"
                 style={{
-                    transform: "translateY(calc(50% + 10rem))",
-                    // @ts-ignore - for responsive styling if needed, though we'll just use a solid calc for now that roughly fits both
-                    "@media (min-width: 640px)": { transform: "translateY(calc(50% + 14rem))" },
-                    background: "radial-gradient(circle at center, rgba(253,251,247,0.18) 0%, rgba(253,251,247,0.06) 30%, transparent 60%)",
-                    filter: "blur(40px)"
+                    width: '40rem',
+                    height: '40rem',
+                    transform: 'translate(-50%, 50%)',
+                    background: 'radial-gradient(ellipse at center, rgba(253,251,247,0.2) 0%, rgba(253,251,247,0.08) 25%, rgba(200,210,255,0.04) 50%, transparent 70%)',
+                    filter: 'blur(30px)',
+                }}
+            />
+
+            {/* Pulsing halo ring around convergence point */}
+            <motion.div
+                className="absolute bottom-0 left-1/2 pointer-events-none flowing-beam-pulse"
+                style={{
+                    width: '30rem',
+                    height: '8rem',
+                    transform: 'translate(-50%, 40%)',
+                    background: 'radial-gradient(ellipse at center, rgba(253,251,247,0.12) 0%, rgba(253,251,247,0.04) 40%, transparent 70%)',
+                    filter: 'blur(20px)',
+                    borderRadius: '50%',
                 }}
             />
         </div>
@@ -296,7 +454,7 @@ const Hero = () => {
                         transition={{ duration: 0.9, delay: 0.4, ease }}
                         className="text-5xl sm:text-7xl lg:text-8xl xl:text-9xl font-extrabold tracking-tighter text-white leading-[0.9]"
                     >
-                        Devansh
+                        name
                     </motion.h1>
                 </div>
                 <div className="overflow-hidden mb-6 sm:mb-8">
@@ -306,7 +464,7 @@ const Hero = () => {
                         transition={{ duration: 0.9, delay: 0.55, ease }}
                         className="text-5xl sm:text-7xl lg:text-8xl xl:text-9xl font-extrabold tracking-tighter text-white leading-[0.9]"
                     >
-                        Behl
+                        lastname
                     </motion.h1>
                 </div>
 
@@ -397,7 +555,7 @@ const Hero = () => {
 
                 {/* Pixelated Canvas Layout & Laser Beam — Centered on Mobile, right-aligned (80%) on Desktop */}
                 <div className="relative lg:absolute lg:left-[80%] lg:-translate-x-1/2 lg:top-0">
-                    <LaserBeam />
+                    <FlowingLightBeam />
                     <PixelatedCanvas
                         src="/devansh.jpg"
                         className="w-[20rem] h-[20rem] sm:w-[28rem] sm:h-[28rem] rounded-xl shrink-0 border border-white/10 shadow-[0_0_80px_10px_rgba(253,251,247,0.15)] bg-[radial-gradient(ellipse_at_top,_rgba(253,251,247,0.3)_0%,_rgba(253,251,247,0.05)_50%,_rgba(0,0,0,0.6)_100%)] relative z-10"
