@@ -122,29 +122,66 @@ const BottomLayerGrid = memo(() => {
    LASER BEAM & APP WINDOW MOCKUP
    ═══════════════════════════════════════════════════════════════════ */
 
+const photonParticles = Array.from({ length: 30 }).map((_, i) => ({
+    id: i,
+    delay: Math.random() * 3,
+    duration: 3 + Math.random() * 4, // 3 to 7 seconds (slower)
+    offsetX: (Math.random() - 0.5) * 16, // scattered up to 8px from center
+    size: 1 + Math.random() * 2, // 1px to 3px (smaller)
+    opacity: 0.4 + Math.random() * 0.6,
+}));
+
 const LaserBeam = memo(() => {
     return (
-        <div className="absolute top-0 left-[80%] -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none z-10 flex flex-col items-center justify-start">
+        <div className="absolute bottom-[100%] left-1/2 -translate-x-1/2 w-[100vw] max-w-7xl h-[200vh] pointer-events-none z-10 flex flex-col items-center justify-start overflow-visible">
             {/* The primary vertical laser line */}
             <motion.div
                 initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "92vh", opacity: 1 }}
+                animate={{ height: "100%", opacity: 1 }}
                 transition={{ duration: 1.5, ease: "easeOut" }}
-                className="w-[2px] bg-[#fdfbf7] shadow-[0_0_20px_5px_rgba(253,251,247,0.5)]"
+                className="w-[4px] bg-[#fdfbf7] shadow-[0_0_30px_10px_rgba(253,251,247,0.6)] origin-top"
                 style={{
                     background: "linear-gradient(to bottom, transparent, rgba(253,251,247,0.8) 20%, rgba(253,251,247,1) 80%, rgba(255,255,255,1))"
                 }}
             />
 
-            {/* The sweeping horizontal flare at the bottom of the beam */}
+            {/* Photon Particles Traveling Downwards */}
+            {photonParticles.map((p) => (
+                <motion.div
+                    key={p.id}
+                    className="absolute top-0 rounded-full bg-[#fdfbf7]"
+                    style={{
+                        width: p.size,
+                        height: p.size, // Perfect spheres
+                        left: `calc(50% + ${p.offsetX}px)`,
+                        boxShadow: "0 0 6px 1px rgba(253,251,247, 0.8)",
+                    }}
+                    animate={{
+                        y: ["0vh", "150vh"],
+                        opacity: [0, p.opacity, p.opacity, p.opacity, 0],
+                        scale: [0.5, 1, 1, 0.5],
+                    }}
+                    transition={{
+                        duration: p.duration,
+                        repeat: Infinity,
+                        delay: p.delay,
+                        ease: "linear",
+                    }}
+                />
+            ))}
+
+            {/* The warm radial flare centered perfectly behind the canvas */}
             <motion.div
-                initial={{ opacity: 0, scaleX: 0 }}
-                animate={{ opacity: 1, scaleX: 1 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1.5, delay: 0.8, ease: "easeOut" }}
-                className="w-full h-[500px] absolute top-[92vh] -translate-y-1/2"
+                className="w-[100vw] sm:w-[50rem] h-[30rem] sm:h-[50rem] absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none"
                 style={{
-                    background: "radial-gradient(ellipse at center, rgba(253,251,247,0.3) 0%, rgba(253,251,247,0.08) 40%, transparent 70%)",
-                    filter: "blur(20px)"
+                    transform: "translateY(calc(50% + 10rem))",
+                    // @ts-ignore - for responsive styling if needed, though we'll just use a solid calc for now that roughly fits both
+                    "@media (min-width: 640px)": { transform: "translateY(calc(50% + 14rem))" },
+                    background: "radial-gradient(circle at center, rgba(253,251,247,0.18) 0%, rgba(253,251,247,0.06) 30%, transparent 60%)",
+                    filter: "blur(40px)"
                 }}
             />
         </div>
@@ -325,19 +362,53 @@ const Hero = () => {
                 </motion.div>
             </div>
 
-            <LaserBeam />
+            {/* Container for the About text and Canvas — Normal flow prevents overlapping */}
+            <div className="z-30 relative w-full mt-16 sm:mt-24 lg:mt-32 mb-32 lg:min-h-[28rem] pointer-events-auto flex flex-col lg:block items-center">
 
-            <div className="z-30 absolute left-[80%] -translate-x-1/2 top-[92vh] mb-32">
-                <PixelatedCanvas
-                    src="/devansh.jpg"
-                    className="w-[24rem] h-[24rem] sm:w-[32rem] sm:h-[32rem] rounded-xl"
-                    objectFit="cover"
-                    responsive={true}
-                    cellSize={1}
-                    dotScale={1}
-                    tintColor="#fdfbf7"
-                    tintStrength={0.2}
-                />
+                {/* About Text Layout — Aligned Left perfectly to match the main Name text */}
+                <div className="w-full max-w-5xl px-10 sm:px-16 lg:px-24 mb-12 lg:mb-0 lg:absolute lg:left-0 lg:top-0 h-full flex flex-col justify-center items-center lg:items-start text-center lg:text-left">
+                    <div className="flex flex-col max-w-[90vw] sm:max-w-lg text-white drop-shadow-md">
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-4 text-[#fdfbf7] drop-shadow-lg">
+                            Systems-oriented engineer.
+                        </h2>
+                        <div className="h-[2px] w-12 lg:w-16 bg-[#fdfbf7] mb-6 shadow-[0_0_10px_rgba(253,251,247,0.5)] mx-auto lg:mx-0" />
+                        <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6 lg:mb-8 font-medium">
+                            I am a systems-oriented full stack developer specializing in
+                            scalable backend architecture, modern frontend engineering, and
+                            decentralized application development. I focus on performance,
+                            clean abstractions, and production-ready infrastructure.
+                        </p>
+                        <div className="flex flex-col gap-3">
+                            {[
+                                'Clean, maintainable architecture',
+                                'Distributed systems & event-driven design',
+                                'DevOps & cloud-native infrastructure',
+                                'Web3 & blockchain development',
+                                'Performance-first mindset'
+                            ].map((item) => (
+                                <div key={item} className="flex items-center gap-3 justify-center lg:justify-start">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#fdfbf7] shadow-[0_0_8px_rgba(253,251,247,0.8)]" />
+                                    <span className="text-gray-200 text-sm sm:text-base font-medium">{item}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Pixelated Canvas Layout & Laser Beam — Centered on Mobile, right-aligned (80%) on Desktop */}
+                <div className="relative lg:absolute lg:left-[80%] lg:-translate-x-1/2 lg:top-0">
+                    <LaserBeam />
+                    <PixelatedCanvas
+                        src="/devansh.jpg"
+                        className="w-[20rem] h-[20rem] sm:w-[28rem] sm:h-[28rem] rounded-xl shrink-0 border border-white/10 shadow-[0_0_80px_10px_rgba(253,251,247,0.15)] bg-[radial-gradient(ellipse_at_top,_rgba(253,251,247,0.3)_0%,_rgba(253,251,247,0.05)_50%,_rgba(0,0,0,0.6)_100%)] relative z-10"
+                        objectFit="cover"
+                        responsive={true}
+                        cellSize={1}
+                        dotScale={1}
+                        tintColor="#fdfbf7"
+                        tintStrength={0.2}
+                    />
+                </div>
             </div>
 
             {/* Scroll indicator */}
