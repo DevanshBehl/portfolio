@@ -125,29 +125,28 @@
   }
 }
 
+
 /* ═══════════════════════════════════════════════════════════════════
-   FLOWING LIGHT BEAM ANIMATIONS
+   FALLING LIGHT BEAM — cinematic vertical rain
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Core bright streams — continuous downward flow */
-.flowing-beam-core {
-  stroke-dasharray: 80 400;
-  animation: flowDown 4s linear infinite;
-}
-
-/* Inner bright line — fast shimmer */
-.flowing-beam-inner {
-  stroke-dasharray: 50 450;
-  animation: flowDown 3s linear infinite;
-}
-
-@keyframes flowDown {
+@keyframes beam-fall {
   0% {
-    stroke-dashoffset: 0;
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  8% {
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 1;
   }
 
   100% {
-    stroke-dashoffset: -480;
+    transform: translateY(110%);
+    opacity: 0;
   }
 }
 

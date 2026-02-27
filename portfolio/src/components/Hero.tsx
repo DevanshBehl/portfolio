@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import type { Easing } from 'framer-motion'
 import { Spotlight } from '@/components/ui/spotlight-new'
 import { PixelatedCanvas } from '@/components/ui/pixelated-canvas'
-import React, { useCallback, useRef, useState, memo } from 'react'
+import React, { useCallback, useRef, memo } from 'react'
 
 const ease: Easing = [0.16, 1, 0.3, 1]
 
@@ -81,168 +81,102 @@ const BottomLayerGrid = memo(() => {
 })
 
 /* ═══════════════════════════════════════════════════════════════════
-   FLOWING LIGHT BEAM — Natural cascading light streams
+   FLOWING LIGHT BEAM — Many thin beams concentrated into one laser
    ═══════════════════════════════════════════════════════════════════ */
 
-// SVG path definitions — organic bezier curves that fan out at top, converge at bottom
-// 13 light beam paths — the 3 center paths get a lightweight glow filter,
-// the rest are plain SVG strokes (essentially free for the GPU).
-const lightPaths = [
-    // Center main stream
-    "M 500 0 C 500 200, 500 400, 500 700 C 500 850, 500 950, 500 1100",
-    // Left-curving stream 1
-    "M 460 0 C 440 180, 420 350, 460 550 C 480 650, 490 800, 500 1100",
-    // Right-curving stream 1
-    "M 540 0 C 560 180, 580 350, 540 550 C 520 650, 510 800, 500 1100",
-    // Left-curving stream 2 (wider)
-    "M 400 0 C 370 150, 350 300, 410 500 C 450 620, 480 780, 500 1100",
-    // Right-curving stream 2 (wider)
-    "M 600 0 C 630 150, 650 300, 590 500 C 550 620, 520 780, 500 1100",
-    // Far left ethereal stream
-    "M 340 0 C 300 120, 280 280, 370 480 C 420 580, 470 760, 500 1100",
-    // Far right ethereal stream
-    "M 660 0 C 700 120, 720 280, 630 480 C 580 580, 530 760, 500 1100",
-    // Wispy left tendril
-    "M 420 0 C 380 100, 360 250, 430 450 C 470 580, 490 820, 500 1100",
-    // Wispy right tendril
-    "M 580 0 C 620 100, 640 250, 570 450 C 530 580, 510 820, 500 1100",
-    // Ultra-wide left sweep
-    "M 280 0 C 240 160, 260 340, 350 520 C 420 640, 470 800, 500 1100",
-    // Ultra-wide right sweep
-    "M 720 0 C 760 160, 740 340, 650 520 C 580 640, 530 800, 500 1100",
-    // Tight left filament
-    "M 480 0 C 465 190, 455 380, 475 560 C 488 680, 495 850, 500 1100",
-    // Tight right filament
-    "M 520 0 C 535 190, 545 380, 525 560 C 512 680, 505 850, 500 1100",
-]
+const BEAM_COUNT = 240
 
-// Flow particle definitions — reduced from 14 to 6 for performance
-const flowParticles = Array.from({ length: 6 }).map((_, i) => ({
-    id: i,
-    pathIndex: i % lightPaths.length,
-    delay: Math.random() * 6,
-    duration: 4 + Math.random() * 5,
-    size: 2 + Math.random() * 3,
-    opacity: 0.5 + Math.random() * 0.5,
-}))
+// Pre-compute beam positions — Gaussian-like distribution centered at 0
+// More beams clustered at center, fewer toward edges
+const beamConfigs = Array.from({ length: BEAM_COUNT }).map((_, i) => {
+    // Distribute beams in a bell-curve: center-heavy, edge-sparse
+    const t = (i / (BEAM_COUNT - 1)) * 2 - 1 // -1 to 1
+    const offset = Math.sign(t) * Math.pow(Math.abs(t), 0.6) * 40 // ±40px from center, clustered
+    const duration = 6 + (i % 7) * 1.2 // 6s to ~14s variations
+    const delay = (i * 0.3) % 8 // stagger up to 8s then wrap
+    const opacity = 1 - Math.abs(t) * 0.5 // center beams brighter
+
+    return { offset, duration, delay, opacity }
+})
 
 const FlowingLightBeam = memo(() => {
     return (
         <div
-            className="absolute bottom-[100%] left-1/2 -translate-x-1/2 pointer-events-none z-10 overflow-visible"
-            style={{ width: '100vw', maxWidth: '80rem', height: '200vh' }}
+            className="absolute bottom-[100%] left-1/2 -translate-x-1/2 pointer-events-none"
+            style={{
+                width: '100vw',
+                maxWidth: '80rem',
+                height: '200vh',
+                overflow: 'hidden',
+                zIndex: 10,
+            }}
         >
-            <svg
-                viewBox="0 0 1000 1100"
-                preserveAspectRatio="none"
-                className="absolute inset-0 w-full h-full overflow-visible"
+            {/* Atmospheric purple haze behind */}
+            <div
+                className="absolute inset-0"
+                style={{
+                    background: 'radial-gradient(ellipse 30% 60% at 50% 50%, rgba(200,190,240,0.1) 0%, transparent 70%)',
+                }}
+            />
+
+            {/* Beam container — all beams centered */}
+            <div
+                className="absolute inset-0"
+                style={{ mixBlendMode: 'screen' }}
             >
-                <defs>
-                    {/* Bright warm white gradient (used for core beams) */}
-                    <linearGradient id="beam-gradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="rgba(255,252,245,0)" />
-                        <stop offset="10%" stopColor="rgba(255,252,245,0.7)" />
-                        <stop offset="40%" stopColor="rgba(255,255,255,1)" />
-                        <stop offset="75%" stopColor="rgba(255,252,245,0.9)" />
-                        <stop offset="100%" stopColor="rgba(255,255,255,1)" />
-                    </linearGradient>
-
-                    {/* Unified ambient glow gradient — ultra smooth */}
-                    <linearGradient id="beam-warm-glow" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="rgba(255,255,255,0)" />
-                        <stop offset="15%" stopColor="rgba(255,250,240,0.15)" />
-                        <stop offset="40%" stopColor="rgba(255,245,230,0.25)" />
-                        <stop offset="70%" stopColor="rgba(255,250,240,0.15)" />
-                        <stop offset="100%" stopColor="rgba(255,255,255,0.02)" />
-                    </linearGradient>
-
-                    {/* Lightweight glow filter — only applied to 3 center paths */}
-                    <filter id="path-glow" x="-30%" y="-5%" width="160%" height="110%">
-                        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
-                        <feMerge>
-                            <feMergeNode in="blur" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-
-                    {/* Ultra-heavy blur for the seamless background ambient glow */}
-                    <filter id="path-ultra-glow" x="-100%" y="-5%" width="300%" height="110%">
-                        <feGaussianBlur in="SourceGraphic" stdDeviation="40" />
-                    </filter>
-                </defs>
-
-                {/* ── Seamless warm ambient background glow ── */}
-                <path
-                    d="M 350 0 C 350 300, 450 600, 500 1100 C 550 600, 650 300, 650 0 Z"
-                    fill="url(#beam-warm-glow)"
-                    filter="url(#path-ultra-glow)"
-                    style={{ opacity: 0.8 }}
-                />
-
-                {/* ── Core bright streams — glow filter only on center 3 ── */}
-                {lightPaths.map((d, i) => (
-                    <path
-                        key={`core-${i}`}
-                        d={d}
-                        fill="none"
-                        stroke="url(#beam-gradient)"
-                        strokeWidth={i < 3 ? 3.5 : i < 5 ? 2.5 : 1.5}
-                        strokeLinecap="round"
-                        filter={i < 3 ? "url(#path-glow)" : undefined}
-                        className="flowing-beam-core"
+                {beamConfigs.map((cfg, i) => (
+                    <div
+                        key={i}
                         style={{
-                            animationDelay: `${i * 0.15}s`,
-                            opacity: i < 3 ? 1 : i < 5 ? 0.7 : i < 9 ? 0.4 : 0.25,
+                            position: 'absolute',
+                            left: '50%',
+                            marginLeft: `${cfg.offset}px`,
+                            top: 0,
+                            width: '4px',
+                            height: '100%',
+                            animation: `beam-fall ${cfg.duration}s linear ${cfg.delay}s infinite both`,
                         }}
-                    />
+                    >
+                        {/* Glow halo behind core */}
+                        <div
+                            style={{
+                                position: 'absolute',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                top: 0,
+                                width: '40px',
+                                height: '100%',
+                                background: `linear-gradient(to bottom, transparent 0%, rgba(230,225,255,${0.04 * cfg.opacity}) 20%, rgba(240,235,255,${0.08 * cfg.opacity}) 50%, rgba(230,225,255,${0.04 * cfg.opacity}) 80%, transparent 100%)`,
+                                filter: 'blur(12px)',
+                                borderRadius: '50%',
+                            }}
+                        />
+                        {/* Core beam — razor thin */}
+                        <div
+                            style={{
+                                position: 'absolute',
+                                left: 0,
+                                top: 0,
+                                width: '100%',
+                                height: '100%',
+                                clipPath: 'polygon(48% 0, 52% 0, 58% 100%, 42% 100%)',
+                                background: `linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(248,245,255,${0.4 * cfg.opacity}) 10%, rgba(255,255,255,${0.95 * cfg.opacity}) 35%, rgba(245,240,255,${0.9 * cfg.opacity}) 50%, rgba(255,255,255,${0.95 * cfg.opacity}) 65%, rgba(248,245,255,${0.4 * cfg.opacity}) 90%, rgba(255,255,255,0) 100%)`,
+                            }}
+                        />
+                    </div>
                 ))}
+            </div>
 
-                {/* ── Bright inner line — pure white core on center 3 ── */}
-                {lightPaths.slice(0, 3).map((d, i) => (
-                    <path
-                        key={`inner-${i}`}
-                        d={d}
-                        fill="none"
-                        stroke="rgba(255,255,255,1)"
-                        strokeWidth={1.5}
-                        strokeLinecap="round"
-                        className="flowing-beam-inner"
-                        style={{ animationDelay: `${i * 0.15}s` }}
-                    />
-                ))}
-            </svg>
-
-            {/* Flowing particles along the streams — reduced to 6 */}
-            {flowParticles.map((p) => (
-                <motion.div
-                    key={p.id}
-                    className="absolute rounded-full bg-[#fdfbf7]"
-                    style={{
-                        width: p.size,
-                        height: p.size,
-                        left: `${42 + Math.random() * 16}%`,
-                        top: 0,
-                        boxShadow: `0 0 ${4 + p.size * 2}px ${p.size}px rgba(253,251,247,0.8)`,
-                    }}
-                    animate={{
-                        y: ['0vh', '180vh'],
-                        x: [
-                            `${(Math.random() - 0.5) * 60}px`,
-                            `${(Math.random() - 0.5) * 40}px`,
-                            `${(Math.random() - 0.5) * 20}px`,
-                            '0px',
-                        ],
-                        opacity: [0, p.opacity, p.opacity, p.opacity * 0.8, 0],
-                        scale: [0.3, 1, 1, 0.5],
-                    }}
-                    transition={{
-                        duration: p.duration,
-                        repeat: Infinity,
-                        delay: p.delay,
-                        ease: 'linear',
-                    }}
-                />
-            ))}
+            {/* Bottom convergence glow */}
+            <div
+                className="absolute bottom-0 left-1/2 pointer-events-none"
+                style={{
+                    width: '30rem',
+                    height: '16rem',
+                    transform: 'translate(-50%, 30%)',
+                    background: 'radial-gradient(ellipse 55% 50% at 50% 20%, rgba(220,210,255,0.15) 0%, rgba(200,190,240,0.05) 40%, transparent 70%)',
+                }}
+            />
         </div>
     )
 })
@@ -255,10 +189,10 @@ const FlowingLightBeam = memo(() => {
 
 const Hero = () => {
     const sectionRef = useRef<HTMLElement>(null)
-    const [maskPos, setMaskPos] = useState<{ x: number; y: number } | null>(null)
+    const maskRef = useRef<HTMLDivElement>(null)
     const rafPending = useRef(false)
 
-    // Throttled mouse tracking — fires setMaskPos at most once per animation frame
+    // Direct DOM manipulation — NO React state, NO re-renders
     const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
         if (!sectionRef.current || rafPending.current) return
         const clientX = e.clientX
@@ -266,31 +200,30 @@ const Hero = () => {
         rafPending.current = true
         requestAnimationFrame(() => {
             rafPending.current = false
-            if (!sectionRef.current) return
+            if (!sectionRef.current || !maskRef.current) return
             const rect = sectionRef.current.getBoundingClientRect()
-            setMaskPos({
-                x: clientX - rect.left,
-                y: clientY - rect.top,
-            })
+            const x = clientX - rect.left
+            const y = clientY - rect.top
+
+            // Only apply mask on the right half of the screen
+            if (x > window.innerWidth / 2) {
+                maskRef.current.style.maskImage = `radial-gradient(circle 350px at ${x}px ${y}px, transparent 0%, transparent 20%, black 70%, black 100%)`
+                maskRef.current.style.webkitMaskImage = `radial-gradient(circle 350px at ${x}px ${y}px, transparent 0%, transparent 20%, black 70%, black 100%)`
+                maskRef.current.style.transition = 'none'
+            } else {
+                maskRef.current.style.maskImage = ''
+                maskRef.current.style.webkitMaskImage = ''
+                maskRef.current.style.transition = 'mask-image 0.5s ease-out, -webkit-mask-image 0.5s ease-out'
+            }
         })
     }, [])
 
     const handleMouseLeave = useCallback(() => {
-        setMaskPos(null)
+        if (!maskRef.current) return
+        maskRef.current.style.maskImage = ''
+        maskRef.current.style.webkitMaskImage = ''
+        maskRef.current.style.transition = 'mask-image 0.5s ease-out, -webkit-mask-image 0.5s ease-out'
     }, [])
-
-    const showReveal = maskPos && maskPos.x > window.innerWidth / 2
-
-    // The mask image will be a radial gradient on the top layer that creates a "hole".
-    // A standard mask hides everything outside the mask. To make a hole, we make the center transparent and the rest black.
-    // By default, the top layer is fully visible (no mask, or mask fully black). 
-    // When clamped, the hole reveals the layer underneath.
-    const maskStyle: React.CSSProperties = showReveal && maskPos
-        ? {
-            WebkitMaskImage: `radial-gradient(circle 350px at ${maskPos.x}px ${maskPos.y}px, transparent 0%, transparent 20%, black 70%, black 100%)`,
-            maskImage: `radial-gradient(circle 350px at ${maskPos.x}px ${maskPos.y}px, transparent 0%, transparent 20%, black 70%, black 100%)`,
-        }
-        : {}
 
     return (
         <section
@@ -311,11 +244,11 @@ const Hero = () => {
                 TOP LAYER — Black overlay with Spotlight & Clouds (Masked)
                 ═══════════════════════════════════════════════════════ */}
             <div
+                ref={maskRef}
                 className="absolute inset-0 z-10 bg-black pointer-events-none"
                 style={{
-                    ...maskStyle,
-                    // Smooth transition when mouse leaves/enters
-                    transition: showReveal ? 'none' : 'mask-image 0.5s ease-out, -webkit-mask-image 0.5s ease-out',
+                    willChange: 'mask-image, -webkit-mask-image',
+                    contain: 'layout style paint',
                 }}
             >
                 {/* Spotlight */}
