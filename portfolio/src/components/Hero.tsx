@@ -51,7 +51,7 @@ const GaseousClouds = memo(() => {
 /* ═══════════════════════════════════════════════════════════════════
    BOTTOM LAYER GRID
    ═══════════════════════════════════════════════════════════════════ */
-
+ // add comments
 const gridItems = [
     { title: "Frontend Architecture", code: "const render = () => <UI />;", position: "col-start-3 row-start-1" },
     { title: "Backend Systems", code: "app.listen(8080, () => log('Ready'));", position: "col-start-4 row-start-1" },
