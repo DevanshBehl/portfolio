@@ -2,48 +2,78 @@ import { motion } from 'framer-motion'
 import type { Easing } from 'framer-motion'
 import { Spotlight } from '@/components/ui/spotlight-new'
 import { PixelatedCanvas } from '@/components/ui/pixelated-canvas'
-import React, { useCallback, useRef, memo } from 'react'
+import React, { useCallback, useRef, useEffect, memo } from 'react'
 
 const ease: Easing = [0.16, 1, 0.3, 1]
 
 /* ═══════════════════════════════════════════════════════════════════
-   GASEOUS CLOUDS COMPONENT
+   NEBULA CLOUD — dual-layer SVG blob background (Huly.io-style)
    ═══════════════════════════════════════════════════════════════════ */
 
-const GaseousClouds = memo(() => {
+const NebulaCloud = memo(() => {
     return (
-        <div className="absolute inset-0 pointer-events-none opacity-80" style={{ mixBlendMode: 'screen' }}>
-            {/* Core Nebula 1 — reduced blur, no scale, slower */}
-            <motion.div
-                className="absolute rounded-full"
+        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
+            {/* ── Primary blob (large) ── */}
+            <svg
+                width="900"
+                height="500"
+                viewBox="0 0 900 500"
+                xmlns="http://www.w3.org/2000/svg"
                 style={{
-                    width: '60vw', height: '60vh', top: '0%', left: '-10%',
-                    background: 'radial-gradient(circle at center, rgba(30, 60, 140, 0.45) 0%, rgba(20, 40, 90, 0.15) 40%, transparent 70%)',
-                    filter: 'blur(50px)',
+                    mixBlendMode: 'screen',
+                    opacity: 0.82,
+                    position: 'absolute',
+                    left: '50%',
+                    top: '20%',
+                    transform: 'translateX(-50%)',
+                    pointerEvents: 'none',
+                    animation: 'nebula-pulse 18s ease-in-out infinite, nebula-drift 26s ease-in-out infinite',
                 }}
-                animate={{
-                    x: [0, 50, -30, 0],
-                    y: [0, 30, -50, 0],
-                    opacity: [0.3, 0.5, 0.25, 0.3],
-                }}
-                transition={{ duration: 40, repeat: Infinity, ease: 'easeInOut' }}
-            />
+            >
+                <defs>
+                    <radialGradient id="nebula1" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor="rgba(210,185,255,0.55)" />
+                        <stop offset="30%" stopColor="rgba(150,100,255,0.38)" />
+                        <stop offset="60%" stopColor="rgba(80,45,200,0.18)" />
+                        <stop offset="85%" stopColor="rgba(40,15,120,0.07)" />
+                        <stop offset="100%" stopColor="rgba(0,0,0,0)" />
+                    </radialGradient>
+                    <filter id="f1">
+                        <feGaussianBlur stdDeviation="45 30" />
+                    </filter>
+                </defs>
+                <ellipse cx="50%" cy="50%" rx="42%" ry="38%" fill="url(#nebula1)" filter="url(#f1)" />
+            </svg>
 
-            {/* Core Nebula 2 (Purple hue) — reduced blur, no scale, slower */}
-            <motion.div
-                className="absolute rounded-full"
+            {/* ── Secondary blob (accent, cooler) ── */}
+            <svg
+                width="500"
+                height="280"
+                viewBox="0 0 500 280"
+                xmlns="http://www.w3.org/2000/svg"
                 style={{
-                    width: '70vw', height: '70vh', bottom: '-20%', right: '-10%',
-                    background: 'radial-gradient(circle at center, rgba(60, 30, 120, 0.35) 0%, rgba(40, 20, 80, 0.1) 45%, transparent 70%)',
-                    filter: 'blur(60px)',
+                    mixBlendMode: 'lighten',
+                    opacity: 0.65,
+                    position: 'absolute',
+                    left: '58%',
+                    top: '35%',
+                    pointerEvents: 'none',
+                    animation: 'nebula-pulse-2 14s ease-in-out infinite 3s',
                 }}
-                animate={{
-                    x: [0, -60, 40, 0],
-                    y: [0, -40, 60, 0],
-                    opacity: [0.25, 0.45, 0.2, 0.25],
-                }}
-                transition={{ duration: 45, repeat: Infinity, ease: 'easeInOut' }}
-            />
+            >
+                <defs>
+                    <radialGradient id="nebula2" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor="rgba(140,100,255,0.35)" />
+                        <stop offset="40%" stopColor="rgba(100,60,220,0.20)" />
+                        <stop offset="70%" stopColor="rgba(50,20,160,0.10)" />
+                        <stop offset="100%" stopColor="rgba(0,0,0,0)" />
+                    </radialGradient>
+                    <filter id="f2">
+                        <feGaussianBlur stdDeviation="28 20" />
+                    </filter>
+                </defs>
+                <ellipse cx="50%" cy="50%" rx="42%" ry="38%" fill="url(#nebula2)" filter="url(#f2)" />
+            </svg>
         </div>
     )
 })
@@ -51,7 +81,7 @@ const GaseousClouds = memo(() => {
 /* ═══════════════════════════════════════════════════════════════════
    BOTTOM LAYER GRID
    ═══════════════════════════════════════════════════════════════════ */
- // add comments
+// add comments
 const gridItems = [
     { title: "Frontend Architecture", code: "const render = () => <UI />;", position: "col-start-3 row-start-1" },
     { title: "Backend Systems", code: "app.listen(8080, () => log('Ready'));", position: "col-start-4 row-start-1" },
@@ -84,7 +114,7 @@ const BottomLayerGrid = memo(() => {
    FLOWING LIGHT BEAM — Many thin beams concentrated into one laser
    ═══════════════════════════════════════════════════════════════════ */
 
-const BEAM_COUNT = 240
+const BEAM_COUNT = 80
 
 // Pre-compute beam positions — Gaussian-like distribution centered at 0
 // More beams clustered at center, fewer toward edges
@@ -191,38 +221,67 @@ const Hero = () => {
     const sectionRef = useRef<HTMLElement>(null)
     const maskRef = useRef<HTMLDivElement>(null)
     const rafPending = useRef(false)
+    const rectCache = useRef<DOMRect | null>(null)
+    const maskActive = useRef(false)
+
+    // Cache bounding rect — recalculate only on resize / scroll, not every frame
+    useEffect(() => {
+        const updateRect = () => {
+            if (sectionRef.current) {
+                rectCache.current = sectionRef.current.getBoundingClientRect()
+            }
+        }
+        updateRect()
+        window.addEventListener('resize', updateRect, { passive: true })
+        window.addEventListener('scroll', updateRect, { passive: true })
+        return () => {
+            window.removeEventListener('resize', updateRect)
+            window.removeEventListener('scroll', updateRect)
+        }
+    }, [])
 
     // Direct DOM manipulation — NO React state, NO re-renders
     const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
-        if (!sectionRef.current || rafPending.current) return
+        if (rafPending.current) return
         const clientX = e.clientX
         const clientY = e.clientY
         rafPending.current = true
         requestAnimationFrame(() => {
             rafPending.current = false
-            if (!sectionRef.current || !maskRef.current) return
-            const rect = sectionRef.current.getBoundingClientRect()
+            const mask = maskRef.current
+            if (!mask) return
+            const rect = rectCache.current || sectionRef.current?.getBoundingClientRect()
+            if (!rect) return
             const x = clientX - rect.left
             const y = clientY - rect.top
+            const halfW = window.innerWidth / 2
 
-            // Only apply mask on the right half of the screen
-            if (x > window.innerWidth / 2) {
-                maskRef.current.style.maskImage = `radial-gradient(circle 350px at ${x}px ${y}px, transparent 0%, transparent 20%, black 70%, black 100%)`
-                maskRef.current.style.webkitMaskImage = `radial-gradient(circle 350px at ${x}px ${y}px, transparent 0%, transparent 20%, black 70%, black 100%)`
-                maskRef.current.style.transition = 'none'
-            } else {
-                maskRef.current.style.maskImage = ''
-                maskRef.current.style.webkitMaskImage = ''
-                maskRef.current.style.transition = 'mask-image 0.5s ease-out, -webkit-mask-image 0.5s ease-out'
+            if (x > halfW) {
+                // Right half — punch a hole
+                const grad = `radial-gradient(circle 350px at ${x}px ${y}px, transparent 0%, transparent 20%, black 70%, black 100%)`
+                mask.style.maskImage = grad
+                mask.style.webkitMaskImage = grad
+                if (!maskActive.current) {
+                    mask.style.transition = 'none'
+                    maskActive.current = true
+                }
+            } else if (maskActive.current) {
+                // Left half — restore, only if previously active
+                mask.style.transition = 'mask-image 0.5s ease-out, -webkit-mask-image 0.5s ease-out'
+                mask.style.maskImage = ''
+                mask.style.webkitMaskImage = ''
+                maskActive.current = false
             }
         })
     }, [])
 
     const handleMouseLeave = useCallback(() => {
-        if (!maskRef.current) return
-        maskRef.current.style.maskImage = ''
-        maskRef.current.style.webkitMaskImage = ''
-        maskRef.current.style.transition = 'mask-image 0.5s ease-out, -webkit-mask-image 0.5s ease-out'
+        const mask = maskRef.current
+        if (!mask || !maskActive.current) return
+        mask.style.transition = 'mask-image 0.5s ease-out, -webkit-mask-image 0.5s ease-out'
+        mask.style.maskImage = ''
+        mask.style.webkitMaskImage = ''
+        maskActive.current = false
     }, [])
 
     return (
@@ -241,17 +300,18 @@ const Hero = () => {
             </div>
 
             {/* ═══════════════════════════════════════════════════════
-                TOP LAYER — Black overlay with Spotlight & Clouds (Masked)
+                TOP LAYER — Black mask overlay (no children = cheap repaint)
                 ═══════════════════════════════════════════════════════ */}
             <div
                 ref={maskRef}
                 className="absolute inset-0 z-10 bg-black pointer-events-none"
-                style={{
-                    willChange: 'mask-image, -webkit-mask-image',
-                    contain: 'layout style paint',
-                }}
-            >
-                {/* Spotlight */}
+                style={{ contain: 'strict' }}
+            />
+
+            {/* ═══════════════════════════════════════════════════════
+                SPOTLIGHT — own compositing layer, NOT inside mask div
+                ═══════════════════════════════════════════════════════ */}
+            <div className="absolute inset-0 z-[11] pointer-events-none">
                 <Spotlight
                     gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 0%, 100%, .08) 0, hsla(0, 0%, 80%, .02) 50%, hsla(0, 0%, 60%, 0) 80%)"
                     gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .06) 0, hsla(0, 0%, 80%, .02) 80%, transparent 100%)"
@@ -263,10 +323,12 @@ const Hero = () => {
                     duration={7}
                     xOffset={100}
                 />
-
-                {/* Gaseous Clouds — Deep Space Flow */}
-                <GaseousClouds />
             </div>
+
+            {/* ═══════════════════════════════════════════════════════
+                NEBULA CLOUD LAYER — z-5, below laser beams, above black bg
+                ═══════════════════════════════════════════════════════ */}
+            <NebulaCloud />
 
             {/* ═══════════════════════════════════════════════════════
                 TEXT CONTENT LAYER — Always visible
