@@ -85,6 +85,8 @@ const BottomLayerGrid = memo(() => {
    ═══════════════════════════════════════════════════════════════════ */
 
 // SVG path definitions — organic bezier curves that fan out at top, converge at bottom
+// 13 light beam paths — the 3 center paths get a lightweight glow filter,
+// the rest are plain SVG strokes (essentially free for the GPU).
 const lightPaths = [
     // Center main stream
     "M 500 0 C 500 200, 500 400, 500 700 C 500 850, 500 950, 500 1100",
@@ -96,6 +98,22 @@ const lightPaths = [
     "M 400 0 C 370 150, 350 300, 410 500 C 450 620, 480 780, 500 1100",
     // Right-curving stream 2 (wider)
     "M 600 0 C 630 150, 650 300, 590 500 C 550 620, 520 780, 500 1100",
+    // Far left ethereal stream
+    "M 340 0 C 300 120, 280 280, 370 480 C 420 580, 470 760, 500 1100",
+    // Far right ethereal stream
+    "M 660 0 C 700 120, 720 280, 630 480 C 580 580, 530 760, 500 1100",
+    // Wispy left tendril
+    "M 420 0 C 380 100, 360 250, 430 450 C 470 580, 490 820, 500 1100",
+    // Wispy right tendril
+    "M 580 0 C 620 100, 640 250, 570 450 C 530 580, 510 820, 500 1100",
+    // Ultra-wide left sweep
+    "M 280 0 C 240 160, 260 340, 350 520 C 420 640, 470 800, 500 1100",
+    // Ultra-wide right sweep
+    "M 720 0 C 760 160, 740 340, 650 520 C 580 640, 530 800, 500 1100",
+    // Tight left filament
+    "M 480 0 C 465 190, 455 380, 475 560 C 488 680, 495 850, 500 1100",
+    // Tight right filament
+    "M 520 0 C 535 190, 545 380, 525 560 C 512 680, 505 850, 500 1100",
 ]
 
 // Flow particle definitions — reduced from 14 to 6 for performance
@@ -120,7 +138,7 @@ const FlowingLightBeam = memo(() => {
                 className="absolute inset-0 w-full h-full overflow-visible"
             >
                 <defs>
-                    {/* Bright warm white gradient */}
+                    {/* Bright warm white gradient (used for core beams) */}
                     <linearGradient id="beam-gradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="rgba(255,252,245,0)" />
                         <stop offset="10%" stopColor="rgba(255,252,245,0.7)" />
@@ -129,7 +147,16 @@ const FlowingLightBeam = memo(() => {
                         <stop offset="100%" stopColor="rgba(255,255,255,1)" />
                     </linearGradient>
 
-                    {/* Lightweight glow filter */}
+                    {/* Unified ambient glow gradient — ultra smooth */}
+                    <linearGradient id="beam-warm-glow" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="rgba(255,255,255,0)" />
+                        <stop offset="15%" stopColor="rgba(255,250,240,0.15)" />
+                        <stop offset="40%" stopColor="rgba(255,245,230,0.25)" />
+                        <stop offset="70%" stopColor="rgba(255,250,240,0.15)" />
+                        <stop offset="100%" stopColor="rgba(255,255,255,0.02)" />
+                    </linearGradient>
+
+                    {/* Lightweight glow filter — only applied to 3 center paths */}
                     <filter id="path-glow" x="-30%" y="-5%" width="160%" height="110%">
                         <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
                         <feMerge>
@@ -137,27 +164,40 @@ const FlowingLightBeam = memo(() => {
                             <feMergeNode in="SourceGraphic" />
                         </feMerge>
                     </filter>
+
+                    {/* Ultra-heavy blur for the seamless background ambient glow */}
+                    <filter id="path-ultra-glow" x="-100%" y="-5%" width="300%" height="110%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="40" />
+                    </filter>
                 </defs>
 
-                {/* ── Layer 1: Core bright streams with light glow filter ── */}
+                {/* ── Seamless warm ambient background glow ── */}
+                <path
+                    d="M 350 0 C 350 300, 450 600, 500 1100 C 550 600, 650 300, 650 0 Z"
+                    fill="url(#beam-warm-glow)"
+                    filter="url(#path-ultra-glow)"
+                    style={{ opacity: 0.8 }}
+                />
+
+                {/* ── Core bright streams — glow filter only on center 3 ── */}
                 {lightPaths.map((d, i) => (
                     <path
                         key={`core-${i}`}
                         d={d}
                         fill="none"
                         stroke="url(#beam-gradient)"
-                        strokeWidth={i < 3 ? 3.5 : 2.5}
+                        strokeWidth={i < 3 ? 3.5 : i < 5 ? 2.5 : 1.5}
                         strokeLinecap="round"
-                        filter="url(#path-glow)"
+                        filter={i < 3 ? "url(#path-glow)" : undefined}
                         className="flowing-beam-core"
                         style={{
-                            animationDelay: `${i * 0.2}s`,
-                            opacity: i < 3 ? 1 : 0.8,
+                            animationDelay: `${i * 0.15}s`,
+                            opacity: i < 3 ? 1 : i < 5 ? 0.7 : i < 9 ? 0.4 : 0.25,
                         }}
                     />
                 ))}
 
-                {/* ── Layer 2: Bright inner line — pure white core ── */}
+                {/* ── Bright inner line — pure white core on center 3 ── */}
                 {lightPaths.slice(0, 3).map((d, i) => (
                     <path
                         key={`inner-${i}`}
@@ -319,7 +359,7 @@ const Hero = () => {
                         transition={{ duration: 0.9, delay: 0.4, ease }}
                         className="text-5xl sm:text-7xl lg:text-8xl xl:text-9xl font-extrabold tracking-tighter text-white leading-[0.9]"
                     >
-                        name
+                        Devansh
                     </motion.h1>
                 </div>
                 <div className="overflow-hidden mb-6 sm:mb-8">
@@ -329,7 +369,7 @@ const Hero = () => {
                         transition={{ duration: 0.9, delay: 0.55, ease }}
                         className="text-5xl sm:text-7xl lg:text-8xl xl:text-9xl font-extrabold tracking-tighter text-white leading-[0.9]"
                     >
-                        lastname
+                        Behl
                     </motion.h1>
                 </div>
 
