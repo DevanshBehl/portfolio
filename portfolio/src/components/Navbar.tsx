@@ -21,18 +21,24 @@ const Navbar = () => {
     const [activeSection, setActiveSection] = useState('')
 
     useEffect(() => {
+        let ticking = false
         const handleScroll = () => {
-            setScrolled(window.scrollY > 20)
-            const sections = navLinks.map((l) => l.href.replace('#', ''))
-            for (let i = sections.length - 1; i >= 0; i--) {
-                const el = document.getElementById(sections[i])
-                if (el && window.scrollY >= el.offsetTop - 200) {
-                    setActiveSection(sections[i])
-                    break
+            if (ticking) return
+            ticking = true
+            requestAnimationFrame(() => {
+                ticking = false
+                setScrolled(window.scrollY > 20)
+                const sections = navLinks.map((l) => l.href.replace('#', ''))
+                for (let i = sections.length - 1; i >= 0; i--) {
+                    const el = document.getElementById(sections[i])
+                    if (el && window.scrollY >= el.offsetTop - 200) {
+                        setActiveSection(sections[i])
+                        break
+                    }
                 }
-            }
+            })
         }
-        window.addEventListener('scroll', handleScroll)
+        window.addEventListener('scroll', handleScroll, { passive: true })
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
@@ -42,8 +48,8 @@ const Navbar = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-                    ? 'bg-black/80 backdrop-blur-xl border-b border-[#1a1a1a]'
-                    : 'bg-transparent'
+                ? 'bg-black/80 backdrop-blur-xl border-b border-[#1a1a1a]'
+                : 'bg-transparent'
                 }`}
         >
             <div className="max-w-6xl mx-auto px-6 lg:px-8">
@@ -66,8 +72,8 @@ const Navbar = () => {
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ duration: 0.4, delay: 0.1 + i * 0.05 }}
                                 className={`relative text-sm font-medium tracking-wide transition-colors duration-300 hover:text-white ${activeSection === link.href.replace('#', '')
-                                        ? 'text-white'
-                                        : 'text-[#a1a1a1]'
+                                    ? 'text-white'
+                                    : 'text-[#a1a1a1]'
                                     }`}
                             >
                                 {link.label}

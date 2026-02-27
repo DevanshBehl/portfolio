@@ -11,76 +11,38 @@ const ease: Easing = [0.16, 1, 0.3, 1]
    ═══════════════════════════════════════════════════════════════════ */
 
 const GaseousClouds = memo(() => {
-    // Only render clouds after mounting to avoid hydration mismatch if any, 
-    // though framer-motion handles it well. We just return the static markup here.
     return (
         <div className="absolute inset-0 pointer-events-none opacity-80" style={{ mixBlendMode: 'screen' }}>
-            {/* Core Nebula 1 */}
+            {/* Core Nebula 1 — reduced blur, no scale, slower */}
             <motion.div
                 className="absolute rounded-full"
                 style={{
                     width: '60vw', height: '60vh', top: '0%', left: '-10%',
                     background: 'radial-gradient(circle at center, rgba(30, 60, 140, 0.45) 0%, rgba(20, 40, 90, 0.15) 40%, transparent 70%)',
-                    filter: 'blur(80px)',
+                    filter: 'blur(50px)',
                 }}
                 animate={{
                     x: [0, 50, -30, 0],
                     y: [0, 30, -50, 0],
-                    scale: [1, 1.25, 0.9, 1],
                     opacity: [0.3, 0.5, 0.25, 0.3],
                 }}
-                transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
+                transition={{ duration: 40, repeat: Infinity, ease: 'easeInOut' }}
             />
 
-            {/* Core Nebula 2 (Purple hue) */}
+            {/* Core Nebula 2 (Purple hue) — reduced blur, no scale, slower */}
             <motion.div
                 className="absolute rounded-full"
                 style={{
                     width: '70vw', height: '70vh', bottom: '-20%', right: '-10%',
                     background: 'radial-gradient(circle at center, rgba(60, 30, 120, 0.35) 0%, rgba(40, 20, 80, 0.1) 45%, transparent 70%)',
-                    filter: 'blur(100px)',
+                    filter: 'blur(60px)',
                 }}
                 animate={{
                     x: [0, -60, 40, 0],
                     y: [0, -40, 60, 0],
-                    scale: [1, 0.85, 1.15, 1],
                     opacity: [0.25, 0.45, 0.2, 0.25],
                 }}
-                transition={{ duration: 30, repeat: Infinity, ease: 'easeInOut' }}
-            />
-
-            {/* Midground Cloud 1 (Teal/Cyan hue) */}
-            <motion.div
-                className="absolute rounded-full"
-                style={{
-                    width: '45vw', height: '45vh', top: '30%', right: '20%',
-                    background: 'radial-gradient(circle at center, rgba(20, 100, 120, 0.25) 0%, rgba(10, 50, 60, 0.05) 50%, transparent 80%)',
-                    filter: 'blur(70px)',
-                }}
-                animate={{
-                    x: [0, -40, 20, 0],
-                    y: [0, 50, -30, 0],
-                    scale: [1, 1.1, 0.95, 1],
-                    opacity: [0.2, 0.35, 0.15, 0.2],
-                }}
-                transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
-            />
-
-            {/* Foreground Drifting Gas */}
-            <motion.div
-                className="absolute rounded-full"
-                style={{
-                    width: '100vw', height: '40vh', top: '60%', left: '0%',
-                    background: 'linear-gradient(90deg, transparent 0%, rgba(40, 70, 160, 0.15) 30%, rgba(50, 30, 100, 0.1) 70%, transparent 100%)',
-                    filter: 'blur(60px)',
-                    transform: 'rotate(-15deg)',
-                }}
-                animate={{
-                    x: ['-20%', '20%', '-20%'],
-                    y: ['-5%', '5%', '-5%'],
-                    opacity: [0.15, 0.3, 0.15],
-                }}
-                transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
+                transition={{ duration: 45, repeat: Infinity, ease: 'easeInOut' }}
             />
         </div>
     )
@@ -134,19 +96,10 @@ const lightPaths = [
     "M 400 0 C 370 150, 350 300, 410 500 C 450 620, 480 780, 500 1100",
     // Right-curving stream 2 (wider)
     "M 600 0 C 630 150, 650 300, 590 500 C 550 620, 520 780, 500 1100",
-    // Far left ethereal stream
-    "M 340 0 C 300 120, 280 280, 370 480 C 420 580, 470 760, 500 1100",
-    // Far right ethereal stream
-    "M 660 0 C 700 120, 720 280, 630 480 C 580 580, 530 760, 500 1100",
-    // Wispy left tendril
-    "M 420 0 C 380 100, 360 250, 430 450 C 470 580, 490 820, 500 1100",
-    // Wispy right tendril
-    "M 580 0 C 620 100, 640 250, 570 450 C 530 580, 510 820, 500 1100",
 ]
 
-// Flow particle definitions for organic motion along paths
-// Reduced particle count for better perf while keeping visual density
-const flowParticles = Array.from({ length: 14 }).map((_, i) => ({
+// Flow particle definitions — reduced from 14 to 6 for performance
+const flowParticles = Array.from({ length: 6 }).map((_, i) => ({
     id: i,
     pathIndex: i % lightPaths.length,
     delay: Math.random() * 6,
@@ -159,16 +112,15 @@ const FlowingLightBeam = memo(() => {
     return (
         <div
             className="absolute bottom-[100%] left-1/2 -translate-x-1/2 pointer-events-none z-10 overflow-visible"
-            style={{ width: '100vw', maxWidth: '80rem', height: '200vh', willChange: 'transform' }}
+            style={{ width: '100vw', maxWidth: '80rem', height: '200vh' }}
         >
             <svg
                 viewBox="0 0 1000 1100"
                 preserveAspectRatio="none"
                 className="absolute inset-0 w-full h-full overflow-visible"
-                style={{ willChange: 'transform' }}
             >
                 <defs>
-                    {/* Bright warm white gradient — increased intensity */}
+                    {/* Bright warm white gradient */}
                     <linearGradient id="beam-gradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="rgba(255,252,245,0)" />
                         <stop offset="10%" stopColor="rgba(255,252,245,0.7)" />
@@ -177,24 +129,7 @@ const FlowingLightBeam = memo(() => {
                         <stop offset="100%" stopColor="rgba(255,255,255,1)" />
                     </linearGradient>
 
-                    {/* Warm glow gradient — boosted opacity */}
-                    <linearGradient id="beam-glow-gradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="rgba(255,250,240,0)" />
-                        <stop offset="15%" stopColor="rgba(255,250,240,0.3)" />
-                        <stop offset="50%" stopColor="rgba(255,252,248,0.55)" />
-                        <stop offset="80%" stopColor="rgba(255,250,240,0.3)" />
-                        <stop offset="100%" stopColor="rgba(255,255,255,0.6)" />
-                    </linearGradient>
-
-                    {/* Outer warm white glow — more intense */}
-                    <linearGradient id="beam-outer-glow" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="rgba(255,248,235,0)" />
-                        <stop offset="25%" stopColor="rgba(255,248,235,0.12)" />
-                        <stop offset="55%" stopColor="rgba(255,250,240,0.2)" />
-                        <stop offset="100%" stopColor="rgba(255,252,245,0.3)" />
-                    </linearGradient>
-
-                    {/* Lightweight glow filter — optimized stdDeviation */}
+                    {/* Lightweight glow filter */}
                     <filter id="path-glow" x="-30%" y="-5%" width="160%" height="110%">
                         <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
                         <feMerge>
@@ -202,80 +137,34 @@ const FlowingLightBeam = memo(() => {
                             <feMergeNode in="SourceGraphic" />
                         </feMerge>
                     </filter>
-
-                    {/* Medium glow — reduced from 18 to 8 */}
-                    <filter id="heavy-glow" x="-60%" y="-5%" width="220%" height="110%">
-                        <feGaussianBlur in="SourceGraphic" stdDeviation="8" />
-                    </filter>
-
-                    {/* Atmospheric glow — reduced from 35 to 12 */}
-                    <filter id="atmospheric-glow" x="-80%" y="-5%" width="260%" height="110%">
-                        <feGaussianBlur in="SourceGraphic" stdDeviation="12" />
-                    </filter>
                 </defs>
 
-                {/* ── Layer 1: Warm atmospheric glow (reduced to 3 paths for perf) ── */}
-                {lightPaths.slice(0, 3).map((d, i) => (
-                    <path
-                        key={`atmo-${i}`}
-                        d={d}
-                        fill="none"
-                        stroke="url(#beam-outer-glow)"
-                        strokeWidth={50 - i * 8}
-                        strokeLinecap="round"
-                        filter="url(#atmospheric-glow)"
-                        className="flowing-beam-atmospheric"
-                        style={{
-                            opacity: 0.5 - i * 0.1,
-                            animationDelay: `${i * 0.3}s`,
-                        }}
-                    />
-                ))}
-
-                {/* ── Layer 2: Warm glow halos — boosted intensity ── */}
-                {lightPaths.map((d, i) => (
-                    <path
-                        key={`glow-${i}`}
-                        d={d}
-                        fill="none"
-                        stroke="url(#beam-glow-gradient)"
-                        strokeWidth={16 - i * 0.8}
-                        strokeLinecap="round"
-                        filter="url(#heavy-glow)"
-                        className="flowing-beam-glow"
-                        style={{
-                            opacity: 0.6 - i * 0.04,
-                            animationDelay: `${i * 0.4}s`,
-                        }}
-                    />
-                ))}
-
-                {/* ── Layer 3: Core bright streams — intensified ── */}
+                {/* ── Layer 1: Core bright streams with light glow filter ── */}
                 {lightPaths.map((d, i) => (
                     <path
                         key={`core-${i}`}
                         d={d}
                         fill="none"
                         stroke="url(#beam-gradient)"
-                        strokeWidth={i < 3 ? 3.5 : i < 5 ? 2.5 : 1.5}
+                        strokeWidth={i < 3 ? 3.5 : 2.5}
                         strokeLinecap="round"
                         filter="url(#path-glow)"
                         className="flowing-beam-core"
                         style={{
                             animationDelay: `${i * 0.2}s`,
-                            opacity: i < 3 ? 1 : i < 5 ? 0.8 : 0.5,
+                            opacity: i < 3 ? 1 : 0.8,
                         }}
                     />
                 ))}
 
-                {/* ── Layer 4: Bright inner line — pure white core ── */}
-                {lightPaths.slice(0, 5).map((d, i) => (
+                {/* ── Layer 2: Bright inner line — pure white core ── */}
+                {lightPaths.slice(0, 3).map((d, i) => (
                     <path
                         key={`inner-${i}`}
                         d={d}
                         fill="none"
                         stroke="rgba(255,255,255,1)"
-                        strokeWidth={i < 3 ? 1.5 : 0.8}
+                        strokeWidth={1.5}
                         strokeLinecap="round"
                         className="flowing-beam-inner"
                         style={{ animationDelay: `${i * 0.15}s` }}
@@ -283,7 +172,7 @@ const FlowingLightBeam = memo(() => {
                 ))}
             </svg>
 
-            {/* Flowing particles along the streams */}
+            {/* Flowing particles along the streams — reduced to 6 */}
             {flowParticles.map((p) => (
                 <motion.div
                     key={p.id}
@@ -314,34 +203,6 @@ const FlowingLightBeam = memo(() => {
                     }}
                 />
             ))}
-
-            {/* Convergence aura — radial glow where beams meet the canvas */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 2, delay: 0.5, ease: 'easeOut' }}
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none"
-                style={{
-                    width: '40rem',
-                    height: '40rem',
-                    transform: 'translate(-50%, 50%)',
-                    background: 'radial-gradient(ellipse at center, rgba(253,251,247,0.2) 0%, rgba(253,251,247,0.08) 25%, rgba(200,210,255,0.04) 50%, transparent 70%)',
-                    filter: 'blur(30px)',
-                }}
-            />
-
-            {/* Pulsing halo ring around convergence point */}
-            <motion.div
-                className="absolute bottom-0 left-1/2 pointer-events-none flowing-beam-pulse"
-                style={{
-                    width: '30rem',
-                    height: '8rem',
-                    transform: 'translate(-50%, 40%)',
-                    background: 'radial-gradient(ellipse at center, rgba(253,251,247,0.12) 0%, rgba(253,251,247,0.04) 40%, transparent 70%)',
-                    filter: 'blur(20px)',
-                    borderRadius: '50%',
-                }}
-            />
         </div>
     )
 })
@@ -355,14 +216,22 @@ const FlowingLightBeam = memo(() => {
 const Hero = () => {
     const sectionRef = useRef<HTMLElement>(null)
     const [maskPos, setMaskPos] = useState<{ x: number; y: number } | null>(null)
+    const rafPending = useRef(false)
 
-    // Using requestAnimationFrame for high performance mouse tracking
+    // Throttled mouse tracking — fires setMaskPos at most once per animation frame
     const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
-        if (!sectionRef.current) return
-        const rect = sectionRef.current.getBoundingClientRect()
-        setMaskPos({
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top,
+        if (!sectionRef.current || rafPending.current) return
+        const clientX = e.clientX
+        const clientY = e.clientY
+        rafPending.current = true
+        requestAnimationFrame(() => {
+            rafPending.current = false
+            if (!sectionRef.current) return
+            const rect = sectionRef.current.getBoundingClientRect()
+            setMaskPos({
+                x: clientX - rect.left,
+                y: clientY - rect.top,
+            })
         })
     }, [])
 
@@ -370,11 +239,7 @@ const Hero = () => {
         setMaskPos(null)
     }, [])
 
-    // Smooth hover effect - we make a portion of the TOP layer transparent to reveal the bottom
-    // We only show the reveal if we have a mask position AND if the cursor is on the right half of the screen.
-    const showReveal = typeof window !== 'undefined'
-        ? maskPos && maskPos.x > window.innerWidth / 2
-        : false
+    const showReveal = maskPos && maskPos.x > window.innerWidth / 2
 
     // The mask image will be a radial gradient on the top layer that creates a "hole".
     // A standard mask hides everything outside the mask. To make a hole, we make the center transparent and the rest black.
@@ -561,10 +426,12 @@ const Hero = () => {
                         className="w-[20rem] h-[20rem] sm:w-[28rem] sm:h-[28rem] rounded-xl shrink-0 border border-white/10 shadow-[0_0_80px_10px_rgba(253,251,247,0.15)] bg-[radial-gradient(ellipse_at_top,_rgba(253,251,247,0.3)_0%,_rgba(253,251,247,0.05)_50%,_rgba(0,0,0,0.6)_100%)] relative z-10"
                         objectFit="cover"
                         responsive={true}
-                        cellSize={1}
-                        dotScale={1}
+                        cellSize={3}
+                        dotScale={0.9}
                         tintColor="#fdfbf7"
                         tintStrength={0.2}
+                        maxFps={30}
+                        sampleAverage={false}
                     />
                 </div>
             </div>

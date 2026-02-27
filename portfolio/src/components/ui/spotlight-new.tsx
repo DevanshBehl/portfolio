@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import React from "react";
 
 type SpotlightProps = {
   gradientFirst?: string;
@@ -24,30 +25,23 @@ export const Spotlight = ({
   duration = 7,
   xOffset = 100,
 }: SpotlightProps = {}) => {
+  // CSS custom properties for the CSS-driven animation
+  const cssVars = {
+    "--spotlight-duration": `${duration}s`,
+    "--spotlight-offset": `${xOffset}px`,
+  } as React.CSSProperties;
+
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-      }}
-      animate={{
-        opacity: 1,
-      }}
-      transition={{
-        duration: 1.5,
-      }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.5 }}
       className="pointer-events-none absolute inset-0 h-full w-full"
     >
-      <motion.div
-        animate={{
-          x: [0, xOffset, 0],
-        }}
-        transition={{
-          duration,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut",
-        }}
-        className="absolute top-0 left-0 w-screen h-screen z-40 pointer-events-none"
+      {/* Left spotlight — CSS-animated for compositor-thread performance */}
+      <div
+        className="absolute top-0 left-0 w-screen h-screen z-40 pointer-events-none spotlight-drift-right"
+        style={cssVars}
       >
         <div
           style={{
@@ -56,9 +50,8 @@ export const Spotlight = ({
             width: `${width}px`,
             height: `${height}px`,
           }}
-          className={`absolute top-0 left-0`}
+          className="absolute top-0 left-0"
         />
-
         <div
           style={{
             transform: "rotate(-45deg) translate(5%, -50%)",
@@ -66,9 +59,8 @@ export const Spotlight = ({
             width: `${smallWidth}px`,
             height: `${height}px`,
           }}
-          className={`absolute top-0 left-0 origin-top-left`}
+          className="absolute top-0 left-0 origin-top-left"
         />
-
         <div
           style={{
             transform: "rotate(-45deg) translate(-180%, -70%)",
@@ -76,21 +68,14 @@ export const Spotlight = ({
             width: `${smallWidth}px`,
             height: `${height}px`,
           }}
-          className={`absolute top-0 left-0 origin-top-left`}
+          className="absolute top-0 left-0 origin-top-left"
         />
-      </motion.div>
+      </div>
 
-      <motion.div
-        animate={{
-          x: [0, -xOffset, 0],
-        }}
-        transition={{
-          duration,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut",
-        }}
-        className="absolute top-0 right-0 w-screen h-screen z-40 pointer-events-none"
+      {/* Right spotlight — CSS-animated for compositor-thread performance */}
+      <div
+        className="absolute top-0 right-0 w-screen h-screen z-40 pointer-events-none spotlight-drift-left"
+        style={cssVars}
       >
         <div
           style={{
@@ -99,9 +84,8 @@ export const Spotlight = ({
             width: `${width}px`,
             height: `${height}px`,
           }}
-          className={`absolute top-0 right-0`}
+          className="absolute top-0 right-0"
         />
-
         <div
           style={{
             transform: "rotate(45deg) translate(-5%, -50%)",
@@ -109,9 +93,8 @@ export const Spotlight = ({
             width: `${smallWidth}px`,
             height: `${height}px`,
           }}
-          className={`absolute top-0 right-0 origin-top-right`}
+          className="absolute top-0 right-0 origin-top-right"
         />
-
         <div
           style={{
             transform: "rotate(45deg) translate(180%, -70%)",
@@ -119,9 +102,9 @@ export const Spotlight = ({
             width: `${smallWidth}px`,
             height: `${height}px`,
           }}
-          className={`absolute top-0 right-0 origin-top-right`}
+          className="absolute top-0 right-0 origin-top-right"
         />
-      </motion.div>
+      </div>
     </motion.div>
   );
 };

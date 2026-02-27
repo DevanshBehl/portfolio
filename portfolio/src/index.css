@@ -133,34 +133,12 @@
 .flowing-beam-core {
   stroke-dasharray: 80 400;
   animation: flowDown 4s linear infinite;
-  will-change: stroke-dashoffset;
-}
-
-/* Glow halos — slower, offset flow */
-.flowing-beam-glow {
-  stroke-dasharray: 120 350;
-  animation: flowDown 5s linear infinite;
-  will-change: stroke-dashoffset;
-}
-
-/* Atmospheric wide glow — very slow drift */
-.flowing-beam-atmospheric {
-  stroke-dasharray: 200 300;
-  animation: flowDown 7s linear infinite;
-  will-change: stroke-dashoffset;
 }
 
 /* Inner bright line — fast shimmer */
 .flowing-beam-inner {
   stroke-dasharray: 50 450;
   animation: flowDown 3s linear infinite;
-  will-change: stroke-dashoffset;
-}
-
-/* Pulsing convergence aura */
-.flowing-beam-pulse {
-  animation: pulseGlow 3s ease-in-out infinite;
-  will-change: opacity, transform;
 }
 
 @keyframes flowDown {
@@ -173,16 +151,36 @@
   }
 }
 
-@keyframes pulseGlow {
+/* ═══════════════════════════════════════════════════════════════════
+   SPOTLIGHT CSS ANIMATIONS — compositor-thread, off-main-thread
+   ═══════════════════════════════════════════════════════════════════ */
 
-  0%,
-  100% {
-    opacity: 0.4;
-    transform: translate(-50%, 40%) scale(1);
+.spotlight-drift-right {
+  animation: spotlightDriftRight var(--spotlight-duration, 7s) ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.spotlight-drift-left {
+  animation: spotlightDriftLeft var(--spotlight-duration, 7s) ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes spotlightDriftRight {
+  0% {
+    transform: translateX(0);
   }
 
-  50% {
-    opacity: 0.7;
-    transform: translate(-50%, 40%) scale(1.1);
+  100% {
+    transform: translateX(var(--spotlight-offset, 100px));
+  }
+}
+
+@keyframes spotlightDriftLeft {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(calc(-1 * var(--spotlight-offset, 100px)));
   }
 }
