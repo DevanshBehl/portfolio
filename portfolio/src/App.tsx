@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import Lenis from 'lenis'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
-import ParticleHero from './components/ParticleHero'
 import Skills from './components/Skills'
 import Projects from './components/Projects'
 import Experience from './components/Experience'
@@ -40,7 +39,6 @@ const App = () => {
         <Navbar />
         <main>
           <Hero />
-          <ParticleHero />
           <Skills />
           <Projects />
           <Experience />

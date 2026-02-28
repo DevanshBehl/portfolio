@@ -32,54 +32,68 @@ const About = () => {
                     About
                 </motion.p>
 
-                {/* Section heading */}
-                <motion.h2
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: 0.1 }}
-                    className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-8 leading-tight"
-                >
-                    Systems-oriented engineer.
-                </motion.h2>
+                <div className="border border-[#1a1a1a] rounded-xl p-[1px] bg-gradient-to-b from-[#1a1a1a] to-transparent relative overflow-hidden">
+                    <div className="w-full h-full bg-[#080808] rounded-[10px] p-8 sm:p-12 relative z-10">
+                        {/* Top accent line */}
+                        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#444] to-transparent opacity-50" />
 
-                {/* Animated divider */}
-                <motion.div
-                    initial={{ width: 0 }}
-                    animate={isInView ? { width: 48 } : {}}
-                    transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="h-[1px] bg-[#333333] mb-8"
-                />
+                        {/* Dot grid subtle background */}
+                        <div className="absolute inset-0 bg-[radial-gradient(#1a1a1a_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none" />
 
-                {/* Bio paragraph */}
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                    className="text-[#a1a1a1] text-base sm:text-lg leading-relaxed max-w-3xl mb-12"
-                >
-                    Devansh is a systems-oriented full stack developer specializing in
-                    scalable backend architecture, modern frontend engineering, and
-                    decentralized application development. He focuses on performance,
-                    clean abstractions, and production-ready infrastructure.
-                </motion.p>
-
-                {/* Expertise highlights — staggered entrance */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-16">
-                    {highlights.map((item, i) => (
-                        <motion.div
-                            key={item}
-                            initial={{ opacity: 0, x: -15 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ duration: 0.5, delay: 0.4 + i * 0.08 }}
-                            whileHover={{ x: 4 }}
-                            className="flex items-start gap-3 group cursor-default"
-                        >
-                            <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#333333] group-hover:bg-white transition-colors duration-300 shrink-0" />
-                            <span className="text-[#a1a1a1] text-sm sm:text-base group-hover:text-white transition-colors duration-300">
-                                {item}
+                        {/* Terminal Header Bar */}
+                        <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#1a1a1a]">
+                            <div className="flex gap-2">
+                                <span className="w-3 h-3 rounded-full bg-[#333]" />
+                                <span className="w-3 h-3 rounded-full bg-[#333]" />
+                                <span className="w-3 h-3 rounded-full bg-[#333]" />
+                            </div>
+                            <span className="text-[#555] text-[10px] font-mono tracking-widest uppercase">
+                                usr/bin/about
                             </span>
-                        </motion.div>
-                    ))}
+                        </div>
+
+                        {/* Section heading */}
+                        <motion.h2
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={isInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ duration: 0.6, delay: 0.1 }}
+                            className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white mb-6 leading-tight"
+                        >
+                            Systems-oriented engineer.
+                        </motion.h2>
+
+                        {/* Bio paragraph */}
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={isInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ duration: 0.6, delay: 0.3 }}
+                            className="text-[#a1a1a1] text-base sm:text-lg leading-relaxed max-w-3xl mb-10"
+                        >
+                            Devansh is a systems-oriented full stack developer specializing in
+                            scalable backend architecture, modern frontend engineering, and
+                            decentralized application development. He focuses on performance,
+                            clean abstractions, and production-ready infrastructure.
+                        </motion.p>
+
+                        {/* Expertise highlights — staggered entrance */}
+                        {/* Expertise highlights */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 relative z-10">
+                            {highlights.map((item, i) => (
+                                <motion.div
+                                    key={item}
+                                    initial={{ opacity: 0, x: -15 }}
+                                    animate={isInView ? { opacity: 1, x: 0 } : {}}
+                                    transition={{ duration: 0.5, delay: 0.4 + i * 0.08 }}
+                                    className="flex items-center gap-3 cursor-default group"
+                                >
+                                    <span className="text-[#444] text-[10px] font-mono group-hover:text-[#666] transition-colors duration-300">{`>`}</span>
+                                    <span className="text-[#a1a1a1] text-sm group-hover:text-white transition-colors duration-300 font-mono tracking-wide">
+                                        {item}
+                                    </span>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

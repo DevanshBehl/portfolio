@@ -78,33 +78,213 @@ const NebulaCloud = memo(() => {
 })
 
 /* ═══════════════════════════════════════════════════════════════════
-   BOTTOM LAYER GRID
+   BOTTOM LAYER — Architecture diagram panels (monochrome)
    ═══════════════════════════════════════════════════════════════════ */
-// add comments
-const gridItems = [
-    { title: "Frontend Architecture", code: "const render = () => <UI />;", position: "col-start-3 row-start-1" },
-    { title: "Backend Systems", code: "app.listen(8080, () => log('Ready'));", position: "col-start-4 row-start-1" },
-    { title: "Web3 Protocols", code: "contract.methods.mint().send();", position: "col-start-3 row-start-2" },
-    { title: "DevOps & Cloud", code: "docker build -t app . && kubectl apply", position: "col-start-4 row-start-2" },
-    { title: "Smart Contracts", code: "pragma solidity ^0.8.0;", position: "col-start-2 row-start-3" },
-    { title: "System Design", code: "class LoadBalancer { ... }", position: "col-start-3 row-start-3" },
-    { title: "Database Architecture", code: "SELECT * FROM users WHERE active = 1;", position: "col-start-4 row-start-3" },
-    { title: "CI/CD Pipelines", code: "on: push:\n  branches: [main]", position: "col-start-3 row-start-4" },
-];
 
 const BottomLayerGrid = memo(() => {
     return (
-        <div className="w-full h-full max-w-6xl mx-auto p-12 grid grid-cols-4 grid-rows-4 gap-x-12 gap-y-16 items-center">
-            {gridItems.map((item, idx) => (
-                <div key={idx} className={`p-6 border border-[#222] bg-[#0a0a0a] rounded-xl shadow-2xl ${item.position}`}>
-                    <h3 className="text-[#888] text-sm tracking-wider uppercase font-semibold mb-4">{item.title}</h3>
-                    <div className="bg-[#111] p-4 rounded-md border border-[#333]">
-                        <code className="text-[#fdfbf7] font-mono text-xs break-words block whitespace-pre-wrap">
-                            {item.code}
-                        </code>
-                    </div>
+        <div className="w-full h-full max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 auto-rows-auto items-stretch">
+
+            {/* ─── Distributed System Architecture ─── */}
+            <div className="col-span-1 sm:col-span-2 border border-[#1a1a1a] bg-[#080808] rounded-xl p-4 sm:p-5 flex flex-col min-h-[250px] sm:min-h-[300px]">
+                <span className="text-[#555] text-[10px] font-mono uppercase tracking-widest mb-4">Distributed System Architecture</span>
+                <div className="flex-1 relative">
+                    <svg className="absolute inset-0 w-full h-full" viewBox="0 0 420 280" fill="none">
+                        <path d="M210 40 L120 95" stroke="#1a1a1a" strokeWidth="1" strokeDasharray="3 3" />
+                        <path d="M210 40 L300 95" stroke="#1a1a1a" strokeWidth="1" strokeDasharray="3 3" />
+                        <path d="M120 130 L60 175" stroke="#1a1a1a" strokeWidth="1" strokeDasharray="3 3" />
+                        <path d="M120 130 L180 175" stroke="#1a1a1a" strokeWidth="1" strokeDasharray="3 3" />
+                        <path d="M300 130 L240 175" stroke="#1a1a1a" strokeWidth="1" strokeDasharray="3 3" />
+                        <path d="M300 130 L360 175" stroke="#1a1a1a" strokeWidth="1" strokeDasharray="3 3" />
+                        <path d="M60 210 L120 245" stroke="#1a1a1a" strokeWidth="1" strokeDasharray="3 3" />
+                        <path d="M180 210 L120 245" stroke="#1a1a1a" strokeWidth="1" strokeDasharray="3 3" />
+                        <path d="M240 210 L300 245" stroke="#1a1a1a" strokeWidth="1" strokeDasharray="3 3" />
+                        <path d="M360 210 L300 245" stroke="#1a1a1a" strokeWidth="1" strokeDasharray="3 3" />
+                        <rect x="155" y="16" width="110" height="30" rx="4" fill="#0d0d0d" stroke="#222" />
+                        <text x="210" y="35" textAnchor="middle" fill="#777" fontSize="9" fontFamily="monospace">API Gateway</text>
+                        <rect x="60" y="88" width="120" height="30" rx="4" fill="#0d0d0d" stroke="#222" />
+                        <text x="120" y="107" textAnchor="middle" fill="#777" fontSize="9" fontFamily="monospace">Auth Service</text>
+                        <rect x="240" y="88" width="120" height="30" rx="4" fill="#0d0d0d" stroke="#222" />
+                        <text x="300" y="107" textAnchor="middle" fill="#777" fontSize="9" fontFamily="monospace">Order Service</text>
+                        <rect x="10" y="168" width="100" height="30" rx="4" fill="#0d0d0d" stroke="#1a1a1a" />
+                        <text x="60" y="187" textAnchor="middle" fill="#555" fontSize="8" fontFamily="monospace">Session Store</text>
+                        <rect x="130" y="168" width="100" height="30" rx="4" fill="#0d0d0d" stroke="#1a1a1a" />
+                        <text x="180" y="187" textAnchor="middle" fill="#555" fontSize="8" fontFamily="monospace">Token Cache</text>
+                        <rect x="190" y="168" width="100" height="30" rx="4" fill="#0d0d0d" stroke="#1a1a1a" />
+                        <text x="240" y="187" textAnchor="middle" fill="#555" fontSize="8" fontFamily="monospace">Queue Worker</text>
+                        <rect x="310" y="168" width="100" height="30" rx="4" fill="#0d0d0d" stroke="#1a1a1a" />
+                        <text x="360" y="187" textAnchor="middle" fill="#555" fontSize="8" fontFamily="monospace">Payment Svc</text>
+                        <rect x="60" y="235" width="120" height="26" rx="4" fill="#0a0a0a" stroke="#181818" />
+                        <text x="120" y="252" textAnchor="middle" fill="#444" fontSize="8" fontFamily="monospace">PostgreSQL Primary</text>
+                        <rect x="240" y="235" width="120" height="26" rx="4" fill="#0a0a0a" stroke="#181818" />
+                        <text x="300" y="252" textAnchor="middle" fill="#444" fontSize="8" fontFamily="monospace">Redis Cluster</text>
+                    </svg>
                 </div>
-            ))}
+            </div>
+
+            {/* ─── Event-Driven Pipeline ─── */}
+            <div className="col-span-1 sm:col-span-2 border border-[#1a1a1a] bg-[#080808] rounded-xl p-4 sm:p-5">
+                <span className="text-[#555] text-[10px] font-mono uppercase tracking-widest mb-4 block">Event-Driven Pipeline</span>
+                <div className="relative h-24">
+                    <svg className="w-full h-full" viewBox="0 0 400 90" fill="none">
+                        <path d="M70 25 L130 25" stroke="#222" strokeWidth="1" markerEnd="url(#ah)" />
+                        <path d="M230 25 L270 25" stroke="#222" strokeWidth="1" markerEnd="url(#ah)" />
+                        <path d="M230 25 L270 55" stroke="#222" strokeWidth="1" markerEnd="url(#ah)" />
+                        <path d="M370 25 L395 25" stroke="#222" strokeWidth="1" />
+                        <path d="M370 55 L395 55" stroke="#222" strokeWidth="1" />
+                        <defs><marker id="ah" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0 0, 6 2, 0 4" fill="#333" /></marker></defs>
+                        <rect x="5" y="10" width="65" height="30" rx="4" fill="#0d0d0d" stroke="#222" />
+                        <text x="37" y="29" textAnchor="middle" fill="#777" fontSize="8" fontFamily="monospace">Producer</text>
+                        <rect x="130" y="10" width="100" height="30" rx="4" fill="#0d0d0d" stroke="#222" />
+                        <text x="180" y="29" textAnchor="middle" fill="#777" fontSize="8" fontFamily="monospace">Kafka Broker</text>
+                        <rect x="270" y="10" width="100" height="30" rx="4" fill="#0d0d0d" stroke="#222" />
+                        <text x="320" y="29" textAnchor="middle" fill="#777" fontSize="8" fontFamily="monospace">Consumer A</text>
+                        <rect x="270" y="42" width="100" height="30" rx="4" fill="#0d0d0d" stroke="#222" />
+                        <text x="320" y="61" textAnchor="middle" fill="#777" fontSize="8" fontFamily="monospace">Consumer B</text>
+                    </svg>
+                </div>
+                <div className="border border-[#1a1a1a] bg-[#0a0a0a] rounded-md p-3 mt-2">
+                    <code className="text-[9px] font-mono text-[#555] block leading-relaxed">
+                        topic: user.events | partitions: 12 | replication: 3<br />
+                        throughput: 45k msg/s | avg latency: 2.3ms<br />
+                        consumer-group: order-processor | lag: 0
+                    </code>
+                </div>
+            </div>
+
+            {/* ─── Relational Schema ─── */}
+            <div className="col-span-1 sm:col-span-2 border border-[#1a1a1a] bg-[#080808] rounded-xl p-4 sm:p-5">
+                <span className="text-[#555] text-[10px] font-mono uppercase tracking-widest mb-3 block">Relational Schema</span>
+                <div className="grid grid-cols-3 gap-2">
+                    {[
+                        { name: 'users', fields: ['id uuid PK', 'email varchar UNIQUE', 'password_hash text', 'role enum', 'created_at timestamptz'] },
+                        { name: 'orders', fields: ['id uuid PK', 'user_id FK -> users', 'total decimal(10,2)', 'status enum', 'placed_at timestamptz'] },
+                        { name: 'ledger', fields: ['id uuid PK', 'order_id FK -> orders', 'amount decimal', 'type enum', 'settled boolean'] },
+                    ].map((table) => (
+                        <div key={table.name} className="border border-[#1a1a1a] bg-[#0a0a0a] rounded-lg overflow-hidden">
+                            <div className="bg-[#0d0d0d] px-2.5 py-1.5 border-b border-[#1a1a1a]">
+                                <span className="text-[#777] text-[9px] font-mono font-semibold">{table.name}</span>
+                            </div>
+                            <div className="px-2.5 py-1.5 space-y-0.5">
+                                {table.fields.map((f) => (
+                                    <div key={f} className="text-[#444] text-[8px] font-mono leading-relaxed">{f}</div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* ─── Kubernetes Cluster ─── */}
+            <div className="col-span-1 sm:col-span-2 border border-[#1a1a1a] bg-[#080808] rounded-xl p-4 sm:p-5">
+                <span className="text-[#555] text-[10px] font-mono uppercase tracking-widest mb-3 block">Kubernetes Cluster</span>
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                    {['Node A', 'Node B', 'Node C'].map((node) => (
+                        <div key={node} className="border border-[#1a1a1a] bg-[#0a0a0a] rounded-md p-2.5">
+                            <span className="text-[#666] text-[9px] font-mono block mb-1.5">{node}</span>
+                            <div className="space-y-1">
+                                {['pod-api', 'pod-worker'].map((pod) => (
+                                    <div key={`${node}-${pod}`} className="flex items-center gap-1.5">
+                                        <div className="w-1 h-1 rounded-full bg-[#444]" />
+                                        <span className="text-[#444] text-[8px] font-mono">{pod}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <div className="border border-[#1a1a1a] bg-[#0a0a0a] rounded-md p-2.5">
+                    <code className="text-[8px] font-mono text-[#555] block leading-relaxed">
+                        $ kubectl get pods -n production<br />
+                        NAME{'                '}READY{'   '}STATUS{'    '}RESTARTS{'   '}AGE<br />
+                        api-6d4f8b7c-x9k2m{'  '}1/1{'     '}Running{'   '}0{'          '}12d<br />
+                        api-6d4f8b7c-p3j7n{'  '}1/1{'     '}Running{'   '}0{'          '}12d<br />
+                        worker-8f2a1c-m4k9{'  '}1/1{'     '}Running{'   '}0{'          '}8d
+                    </code>
+                </div>
+            </div>
+
+            {/* ─── Infrastructure Layers ─── */}
+            <div className="col-span-1 sm:col-span-2 border border-[#1a1a1a] bg-[#080808] rounded-xl p-4 sm:p-5">
+                <span className="text-[#555] text-[10px] font-mono uppercase tracking-widest mb-3 block">Infrastructure Layers</span>
+                <div className="space-y-1.5">
+                    {[
+                        { layer: 'CDN', detail: 'CloudFront / 42 edge locations / TLS 1.3' },
+                        { layer: 'Ingress', detail: 'ALB / WAF rules / rate limiting 10k/min' },
+                        { layer: 'Compute', detail: 'ECS Fargate / 4 vCPU / auto-scale 2-12' },
+                        { layer: 'Cache', detail: 'ElastiCache r6g.large / 3-node cluster' },
+                        { layer: 'Database', detail: 'RDS PostgreSQL 15 / Multi-AZ / 500 IOPS' },
+                        { layer: 'Storage', detail: 'S3 Standard / lifecycle policies / versioned' },
+                        { layer: 'Monitoring', detail: 'CloudWatch / X-Ray traces / custom metrics' },
+                    ].map((row) => (
+                        <div key={row.layer} className="flex items-center gap-3 border border-[#1a1a1a] bg-[#0a0a0a] rounded-md px-3 py-1.5">
+                            <span className="text-[#666] text-[9px] font-mono font-semibold w-20 shrink-0">{row.layer}</span>
+                            <span className="text-[#444] text-[8px] font-mono">{row.detail}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* ─── Smart Contract ─── */}
+            <div className="col-span-1 sm:col-span-2 border border-[#1a1a1a] bg-[#080808] rounded-xl p-4 sm:p-5">
+                <span className="text-[#555] text-[10px] font-mono uppercase tracking-widest mb-3 block">Smart Contract</span>
+                <div className="border border-[#1a1a1a] bg-[#0a0a0a] rounded-md p-3">
+                    <code className="text-[9px] font-mono text-[#555] block leading-[1.7] whitespace-pre">{`// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+contract Vault {
+  mapping(address => uint256) private _balances;
+  mapping(address => mapping(address => uint256)) private _allowances;
+  uint256 private _totalSupply;
+
+  event Deposit(address indexed from, uint256 amount);
+  event Withdraw(address indexed to, uint256 amount);
+
+  function deposit() external payable {
+    _balances[msg.sender] += msg.value;
+    _totalSupply += msg.value;
+    emit Deposit(msg.sender, msg.value);
+  }
+
+  function withdraw(uint256 amount) external {
+    require(_balances[msg.sender] >= amount);
+    _balances[msg.sender] -= amount;
+    payable(msg.sender).transfer(amount);
+    emit Withdraw(msg.sender, amount);
+  }
+}`}</code>
+                </div>
+            </div>
+
+            {/* ─── System Metrics ─── */}
+            <div className="col-span-1 sm:col-span-2 border border-[#1a1a1a] bg-[#080808] rounded-xl p-4 sm:p-5">
+                <span className="text-[#555] text-[10px] font-mono uppercase tracking-widest mb-3 block">System Metrics</span>
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                    {[
+                        { label: 'Requests/sec', value: '12,847' },
+                        { label: 'P99 Latency', value: '23ms' },
+                        { label: 'Uptime', value: '99.97%' },
+                        { label: 'Error Rate', value: '0.02%' },
+                    ].map((metric) => (
+                        <div key={metric.label} className="border border-[#1a1a1a] bg-[#0a0a0a] rounded-md px-3 py-2.5">
+                            <span className="text-[#444] text-[8px] font-mono block mb-1">{metric.label}</span>
+                            <span className="text-[#888] text-base font-mono font-semibold">{metric.value}</span>
+                        </div>
+                    ))}
+                </div>
+                <div className="border border-[#1a1a1a] bg-[#0a0a0a] rounded-md p-2.5">
+                    <code className="text-[8px] font-mono text-[#444] block leading-relaxed">
+                        $ curl -s /health | jq .<br />
+                        {'{'}<br />
+                        {'  '}"status": "healthy",<br />
+                        {'  '}"version": "2.4.1",<br />
+                        {'  '}"connections": 2847,<br />
+                        {'  '}"memory_mb": 512,<br />
+                        {'  '}"cpu_percent": 34.2<br />
+                        {'}'}
+                    </code>
+                </div>
+            </div>
         </div>
     )
 })
@@ -196,6 +376,73 @@ const FlowingLightBeam = memo(() => {
 })
 
 
+/* ═══════════════════════════════════════════════════════════════════
+   HORIZONTAL LIGHT BEAM — same beams, moving right to left
+   ═══════════════════════════════════════════════════════════════════ */
+
+const HorizontalLightBeam = memo(() => {
+    return (
+        <div
+            className="absolute pointer-events-none"
+            style={{
+                right: 0,
+                top: 0,
+                width: '100vw',
+                height: '100px',
+                overflow: 'hidden',
+                zIndex: 10,
+            }}
+        >
+            {/* Beam container */}
+            <div
+                className="absolute inset-0"
+                style={{ mixBlendMode: 'screen' }}
+            >
+                {beamConfigs.map((cfg, i) => (
+                    <div
+                        key={i}
+                        style={{
+                            position: 'absolute',
+                            top: '50%',
+                            marginTop: `${cfg.offset}px`,
+                            left: 0,
+                            height: '4px',
+                            width: '100%',
+                            animation: `beam-slide ${cfg.duration}s linear ${cfg.delay}s infinite both`,
+                        }}
+                    >
+                        {/* Glow halo */}
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                left: 0,
+                                height: '40px',
+                                width: '100%',
+                                background: `linear-gradient(to left, transparent 0%, rgba(230,225,255,${0.04 * cfg.opacity}) 20%, rgba(240,235,255,${0.08 * cfg.opacity}) 50%, rgba(230,225,255,${0.04 * cfg.opacity}) 80%, transparent 100%)`,
+                                filter: 'blur(12px)',
+                                borderRadius: '50%',
+                            }}
+                        />
+                        {/* Core beam */}
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                height: '100%',
+                                width: '100%',
+                                clipPath: 'polygon(0 48%, 0 52%, 100% 58%, 100% 42%)',
+                                background: `linear-gradient(to left, rgba(255,255,255,0) 0%, rgba(248,245,255,${0.4 * cfg.opacity}) 10%, rgba(255,255,255,${0.95 * cfg.opacity}) 35%, rgba(245,240,255,${0.9 * cfg.opacity}) 50%, rgba(255,255,255,${0.95 * cfg.opacity}) 65%, rgba(248,245,255,${0.4 * cfg.opacity}) 90%, rgba(255,255,255,0) 100%)`,
+                            }}
+                        />
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+})
 
 /* ═══════════════════════════════════════════════════════════════════
    HERO COMPONENT
@@ -203,6 +450,7 @@ const FlowingLightBeam = memo(() => {
 
 const Hero = () => {
     const sectionRef = useRef<HTMLElement>(null)
+    const heroContentRef = useRef<HTMLDivElement>(null)
     const maskRef = useRef<HTMLDivElement>(null)
     const rafPending = useRef(false)
     const rectCache = useRef<DOMRect | null>(null)
@@ -272,177 +520,230 @@ const Hero = () => {
         <section
             id="hero"
             ref={sectionRef}
-            className="relative min-h-[160vh] w-full overflow-hidden flex flex-col pt-[22vh]"
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
+            className="relative min-h-[160vh] w-full overflow-hidden flex flex-col"
         >
             {/* ═══════════════════════════════════════════════════════
-                BOTTOM LAYER — Underlying Grid with scattered code blocks
-                ═══════════════════════════════════════════════════════ */}
-            <div className="absolute inset-0 z-0 overflow-hidden pt-20">
-                <BottomLayerGrid />
-            </div>
-
-            {/* ═══════════════════════════════════════════════════════
-                TOP LAYER — Black mask overlay (no children = cheap repaint)
+                HERO CONTENT AREA — hover effect only works here
                 ═══════════════════════════════════════════════════════ */}
             <div
-                ref={maskRef}
-                className="absolute inset-0 z-10 bg-black pointer-events-none"
-                style={{ contain: 'strict' }}
-            />
-
-            {/* ═══════════════════════════════════════════════════════
-                SPOTLIGHT — own compositing layer, NOT inside mask div
-                ═══════════════════════════════════════════════════════ */}
-            <div className="absolute inset-0 z-[11] pointer-events-none">
-                <Spotlight
-                    gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 0%, 100%, .08) 0, hsla(0, 0%, 80%, .02) 50%, hsla(0, 0%, 60%, 0) 80%)"
-                    gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .06) 0, hsla(0, 0%, 80%, .02) 80%, transparent 100%)"
-                    gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .04) 0, hsla(0, 0%, 60%, .02) 80%, transparent 100%)"
-                    translateY={-350}
-                    width={560}
-                    height={1380}
-                    smallWidth={240}
-                    duration={7}
-                    xOffset={100}
-                />
-            </div>
-
-            {/* ═══════════════════════════════════════════════════════
-                NEBULA CLOUD LAYER — z-5, below laser beams, above black bg
-                ═══════════════════════════════════════════════════════ */}
-            <NebulaCloud />
-
-            {/* ═══════════════════════════════════════════════════════
-                TEXT CONTENT LAYER — Always visible
-                ═══════════════════════════════════════════════════════ */}
-            <div
-                className="relative z-20 max-w-5xl w-full text-left pointer-events-auto px-10 sm:px-16 lg:px-24 mb-16"
+                ref={heroContentRef}
+                className="relative w-full flex flex-col pt-[22vh] pb-16"
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
             >
-                {/* Role tag */}
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.2, ease }}
-                    className="text-[#888888] text-xs sm:text-sm font-medium tracking-[0.2em] uppercase mb-6 sm:mb-8"
-                >
-                    Full Stack Developer · Web3 Developer · DevOps Engineer
-                </motion.p>
-
-                {/* Name */}
-                <div className="overflow-hidden mb-2 sm:mb-3">
-                    <motion.h1
-                        initial={{ y: '100%', opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.9, delay: 0.4, ease }}
-                        className="text-5xl sm:text-7xl lg:text-8xl xl:text-9xl font-extrabold tracking-tighter text-white leading-[0.9]"
-                    >
-                        Devansh
-                    </motion.h1>
-                </div>
-                <div className="overflow-hidden mb-6 sm:mb-8">
-                    <motion.h1
-                        initial={{ y: '100%', opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.9, delay: 0.55, ease }}
-                        className="text-5xl sm:text-7xl lg:text-8xl xl:text-9xl font-extrabold tracking-tighter text-white leading-[0.9]"
-                    >
-                        Behl
-                    </motion.h1>
+                {/* BOTTOM LAYER — Grid */}
+                <div className="absolute inset-0 z-0 overflow-hidden pt-20">
+                    <BottomLayerGrid />
                 </div>
 
-                {/* Subtitle */}
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.8, ease }}
-                    className="text-lg sm:text-xl lg:text-2xl text-[#a1a1a1] font-normal max-w-2xl mb-4 leading-relaxed"
-                >
-                    Full Stack &amp; Web3 Engineer building scalable systems.
-                </motion.p>
+                {/* TOP LAYER — Black mask overlay (constrained to hero content) */}
+                <div
+                    ref={maskRef}
+                    className="absolute inset-0 z-10 bg-black pointer-events-none"
+                    style={{ contain: 'strict' }}
+                />
 
-                {/* Description */}
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.95, ease }}
-                    className="text-sm sm:text-base text-[#888888] font-normal max-w-xl mb-10 sm:mb-12 leading-relaxed"
-                >
-                    I design and build high-performance web applications, decentralized
-                    systems, and production-grade cloud infrastructure.
-                </motion.p>
+                {/* SPOTLIGHT */}
+                <div className="absolute inset-0 z-[11] pointer-events-none">
+                    <Spotlight
+                        gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 0%, 100%, .08) 0, hsla(0, 0%, 80%, .02) 50%, hsla(0, 0%, 60%, 0) 80%)"
+                        gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .06) 0, hsla(0, 0%, 80%, .02) 80%, transparent 100%)"
+                        gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(0, 0%, 100%, .04) 0, hsla(0, 0%, 60%, .02) 80%, transparent 100%)"
+                        translateY={-350}
+                        width={560}
+                        height={1380}
+                        smallWidth={240}
+                        duration={7}
+                        xOffset={100}
+                    />
+                </div>
 
-                {/* CTA Buttons */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 1.1, ease }}
-                    className="flex flex-col sm:flex-row items-start justify-start gap-4"
-                >
-                    <motion.a
-                        href="#projects"
-                        whileHover={{ scale: 1.04, borderColor: '#555555' }}
-                        whileTap={{ scale: 0.97 }}
-                        transition={{ duration: 0.2 }}
-                        className="px-8 py-3.5 border border-[#333333] text-white text-sm font-medium tracking-wide rounded-full inline-flex items-center gap-2 transition-colors duration-300 hover:bg-[#111111]"
+                {/* NEBULA */}
+                <NebulaCloud />
+
+                {/* TEXT CONTENT */}
+                <div className="relative z-20 max-w-5xl w-full text-left pointer-events-auto px-10 sm:px-16 lg:px-24 mb-16">
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, delay: 0.2, ease }}
+                        className="text-[#888888] text-xs sm:text-sm font-medium tracking-[0.2em] uppercase mb-6 sm:mb-8"
                     >
-                        View Projects
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                    </motion.a>
-                    <motion.a
-                        href="#contact"
-                        whileHover={{ scale: 1.04 }}
-                        whileTap={{ scale: 0.97 }}
-                        transition={{ duration: 0.2 }}
-                        className="px-8 py-3.5 bg-white text-black text-sm font-medium tracking-wide rounded-full transition-colors duration-300 hover:bg-[#e0e0e0]"
+                        Full Stack Developer · Web3 Developer · DevOps Engineer
+                    </motion.p>
+
+                    <div className="overflow-hidden mb-2 sm:mb-3">
+                        <motion.h1
+                            initial={{ y: '100%', opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ duration: 0.9, delay: 0.4, ease }}
+                            className="text-5xl sm:text-7xl lg:text-8xl xl:text-9xl font-extrabold tracking-tighter text-white leading-[0.9]"
+                        >
+                            Devansh
+                        </motion.h1>
+                    </div>
+                    <div className="overflow-hidden mb-6 sm:mb-8">
+                        <motion.h1
+                            initial={{ y: '100%', opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ duration: 0.9, delay: 0.55, ease }}
+                            className="text-5xl sm:text-7xl lg:text-8xl xl:text-9xl font-extrabold tracking-tighter text-white leading-[0.9]"
+                        >
+                            Behl
+                        </motion.h1>
+                    </div>
+
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, delay: 0.8, ease }}
+                        className="text-lg sm:text-xl lg:text-2xl text-[#a1a1a1] font-normal max-w-2xl mb-4 leading-relaxed"
                     >
-                        Contact Me
-                    </motion.a>
-                </motion.div>
+                        Full Stack &amp; Web3 Engineer building scalable systems.
+                    </motion.p>
+
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, delay: 0.95, ease }}
+                        className="text-sm sm:text-base text-[#888888] font-normal max-w-xl mb-10 sm:mb-12 leading-relaxed"
+                    >
+                        I design and build high-performance web applications, decentralized
+                        systems, and production-grade cloud infrastructure.
+                    </motion.p>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, delay: 1.1, ease }}
+                        className="flex flex-col sm:flex-row items-start justify-start gap-4"
+                    >
+                        <motion.a
+                            href="#projects"
+                            whileHover={{ scale: 1.04, borderColor: '#555555' }}
+                            whileTap={{ scale: 0.97 }}
+                            transition={{ duration: 0.2 }}
+                            className="px-8 py-3.5 border border-[#333333] text-white text-sm font-medium tracking-wide rounded-full inline-flex items-center gap-2 transition-colors duration-300 hover:bg-[#111111]"
+                        >
+                            View Projects
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </motion.a>
+                        <motion.a
+                            href="#contact"
+                            whileHover={{ scale: 1.04 }}
+                            whileTap={{ scale: 0.97 }}
+                            transition={{ duration: 0.2 }}
+                            className="px-8 py-3.5 bg-white text-black text-sm font-medium tracking-wide rounded-full transition-colors duration-300 hover:bg-[#e0e0e0]"
+                        >
+                            Contact Me
+                        </motion.a>
+                    </motion.div>
+                </div>
             </div>
 
-            {/* Container for the About text and Canvas — Normal flow prevents overlapping */}
-            <div className="z-30 relative w-full mt-16 sm:mt-24 lg:mt-32 mb-32 lg:min-h-[28rem] pointer-events-auto flex flex-col lg:block items-center">
-
-                {/* About Text Layout — Aligned Left perfectly to match the main Name text */}
-                <div className="w-full max-w-5xl px-10 sm:px-16 lg:px-24 mb-12 lg:mb-0 lg:absolute lg:left-0 lg:top-0 h-full flex flex-col justify-center items-center lg:items-start text-center lg:text-left">
-                    <div className="flex flex-col max-w-[90vw] sm:max-w-lg text-white drop-shadow-md">
-                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-4 text-[#fdfbf7] drop-shadow-lg">
-                            Systems-oriented engineer.
-                        </h2>
-                        <div className="h-[2px] w-12 lg:w-16 bg-[#fdfbf7] mb-6 shadow-[0_0_10px_rgba(253,251,247,0.5)] mx-auto lg:mx-0" />
-                        <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6 lg:mb-8 font-medium">
-                            I am a systems-oriented full stack developer specializing in
-                            scalable backend architecture, modern frontend engineering, and
-                            decentralized application development. I focus on performance,
-                            clean abstractions, and production-ready infrastructure.
-                        </p>
-                        <div className="flex flex-col gap-3">
-                            {[
-                                'Clean, maintainable architecture',
-                                'Distributed systems & event-driven design',
-                                'DevOps & cloud-native infrastructure',
-                                'Web3 & blockchain development',
-                                'Performance-first mindset'
-                            ].map((item) => (
-                                <div key={item} className="flex items-center gap-3 justify-center lg:justify-start">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#fdfbf7] shadow-[0_0_8px_rgba(253,251,247,0.8)]" />
-                                    <span className="text-gray-200 text-sm sm:text-base font-medium">{item}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Laser Beam — right-aligned on Desktop */}
-                <div className="relative lg:absolute lg:left-[80%] lg:-translate-x-1/2 lg:top-0">
+            {/* ═══════════════════════════════════════════════════════
+                TABLET CONTAINER — full-width bordered device
+                The light beam falls onto this. No hover effect here.
+                ═══════════════════════════════════════════════════════ */}
+            <div className="relative z-30 w-full px-6 sm:px-10 lg:px-16 mb-32">
+                {/* Laser Beam — positioned to fall onto the tablet from above */}
+                <div className="absolute right-[15%] top-0 z-40">
                     <FlowingLightBeam />
                 </div>
 
+                {/* Horizontal Beam — left side, 20% up from bottom */}
+                <div className="absolute left-0 bottom-[20%] z-20 h-[100px] w-6 sm:w-10 lg:w-16 overflow-visible">
+                    <HorizontalLightBeam />
+                </div>
+
+
+
+                <div className="relative w-full border border-[#222] rounded-2xl bg-[#0a0a0a] overflow-hidden">
+                    {/* Top edge glow */}
+                    <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#444] to-transparent" />
+
+
+                    {/* Tablet content */}
+                    <div className="relative flex flex-col lg:flex-row items-center lg:items-stretch">
+                        {/* Text content — left side */}
+                        <div className="w-full lg:w-3/5 px-10 sm:px-16 lg:px-20 py-16 sm:py-20 lg:py-24 flex flex-col justify-center items-center lg:items-start text-center lg:text-left">
+                            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-4 text-[#fdfbf7] drop-shadow-lg">
+                                Systems-oriented engineer.
+                            </h2>
+                            <div className="h-[2px] w-12 lg:w-16 bg-[#fdfbf7] mb-6 shadow-[0_0_10px_rgba(253,251,247,0.5)] mx-auto lg:mx-0" />
+                            <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6 lg:mb-8 font-medium max-w-lg">
+                                I am a systems-oriented full stack developer specializing in
+                                scalable backend architecture, modern frontend engineering, and
+                                decentralized application development. I focus on performance,
+                                clean abstractions, and production-ready infrastructure.
+                            </p>
+                            <div className="flex flex-col gap-3">
+                                {[
+                                    'Clean, maintainable architecture',
+                                    'Distributed systems & event-driven design',
+                                    'DevOps & cloud-native infrastructure',
+                                    'Web3 & blockchain development',
+                                    'Performance-first mindset'
+                                ].map((item) => (
+                                    <div key={item} className="flex items-center gap-3 justify-center lg:justify-start">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#fdfbf7] shadow-[0_0_8px_rgba(253,251,247,0.8)]" />
+                                        <span className="text-gray-200 text-sm sm:text-base font-medium">{item}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Photo frame — right side */}
+                        <div className="w-full lg:w-2/5 flex items-center justify-center py-10 lg:py-16 px-8 lg:px-10 lg:pr-16">
+                            <div className="relative w-full max-w-[320px] aspect-square">
+                                {/* Outer metallic frame */}
+                                <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-[#2a2a2a] via-[#1a1a1a] to-[#222]" />
+                                {/* Frame inner edge highlight */}
+                                <div className="absolute inset-[1px] rounded-lg bg-gradient-to-b from-[#333] via-[#111] to-[#1a1a1a]" />
+                                {/* Matte / passepartout */}
+                                <div className="absolute inset-[4px] rounded-md bg-[#0d0d0d]" />
+
+                                {/* Corner brackets — top left */}
+                                <div className="absolute top-[14px] left-[14px] w-5 h-[1px] bg-[#444]" />
+                                <div className="absolute top-[14px] left-[14px] w-[1px] h-5 bg-[#444]" />
+                                {/* Corner brackets — top right */}
+                                <div className="absolute top-[14px] right-[14px] w-5 h-[1px] bg-[#444]" />
+                                <div className="absolute top-[14px] right-[14px] w-[1px] h-5 bg-[#444]" />
+                                {/* Corner brackets — bottom left */}
+                                <div className="absolute bottom-[14px] left-[14px] w-5 h-[1px] bg-[#444]" />
+                                <div className="absolute bottom-[14px] left-[14px] w-[1px] h-5 bg-[#444]" />
+                                {/* Corner brackets — bottom right */}
+                                <div className="absolute bottom-[14px] right-[14px] w-5 h-[1px] bg-[#444]" />
+                                <div className="absolute bottom-[14px] right-[14px] w-[1px] h-5 bg-[#444]" />
+
+                                {/* Photo area */}
+                                <div className="absolute inset-[18px] rounded overflow-hidden">
+                                    <img
+                                        src="/devansh.jpg"
+                                        alt="Devansh Behl"
+                                        className="w-full h-full object-cover grayscale brightness-90 contrast-110"
+                                    />
+                                    {/* Top light reflection */}
+                                    <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] via-transparent to-transparent" />
+                                    {/* Inner shadow vignette */}
+                                    <div className="absolute inset-0 shadow-[inset_0_0_40px_rgba(0,0,0,0.7)]" />
+                                </div>
+
+                                {/* Bottom label plaque */}
+                                <div className="absolute bottom-[5px] left-1/2 -translate-x-1/2">
+                                    <div className="px-4 py-[2px] bg-[#151515] border border-[#2a2a2a] rounded-sm">
+                                        <span className="text-[8px] font-mono text-[#555] tracking-[0.2em] uppercase">DB</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+
 
             {/* Scroll indicator */}
             <motion.div
@@ -463,3 +764,4 @@ const Hero = () => {
 }
 
 export default Hero
+

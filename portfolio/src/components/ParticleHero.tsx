@@ -149,7 +149,7 @@ const OverlayUI = memo(
                         background: 'rgba(255,255,255,0.03)',
                     }}
                 >
-                    Available for hire
+                    Full Stack · Web3 · DevOps
                 </span>
 
                 {/* "For Developers" — hover triggers morph */}
@@ -166,7 +166,7 @@ const OverlayUI = memo(
                         letterSpacing: '-0.02em',
                     }}
                 >
-                    For Developers
+                    Building the Future
                 </h2>
 
                 {/* Subtitle */}
@@ -181,7 +181,7 @@ const OverlayUI = memo(
                         pointerEvents: 'auto',
                     }}
                 >
-                    Achieve new heights
+                    One system at a time
                 </h3>
 
                 {/* CTA Button */}
@@ -207,7 +207,7 @@ const OverlayUI = memo(
                     }
                     onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
                 >
-                    View My Work
+                    Explore Projects
                 </a>
             </div>
         )

@@ -18,7 +18,7 @@ const navLinks: NavLink[] = [
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [scrolled, setScrolled] = useState(false)
-    const [activeSection, setActiveSection] = useState('')
+    const [activeSection, setActiveSection] = useState('about')
 
     useEffect(() => {
         let ticking = false
@@ -29,16 +29,20 @@ const Navbar = () => {
                 ticking = false
                 setScrolled(window.scrollY > 20)
                 const sections = navLinks.map((l) => l.href.replace('#', ''))
+                let found = false
                 for (let i = sections.length - 1; i >= 0; i--) {
                     const el = document.getElementById(sections[i])
                     if (el && window.scrollY >= el.offsetTop - 200) {
                         setActiveSection(sections[i])
+                        found = true
                         break
                     }
                 }
+                if (!found) setActiveSection('about')
             })
         }
         window.addEventListener('scroll', handleScroll, { passive: true })
+        handleScroll()
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
@@ -62,8 +66,8 @@ const Navbar = () => {
                         Devansh Behl
                     </a>
 
-                    {/* Desktop links */}
-                    <div className="hidden md:flex items-center gap-8">
+                    {/* Desktop links — centered */}
+                    <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
                         {navLinks.map((link, i) => (
                             <motion.a
                                 key={link.href}
