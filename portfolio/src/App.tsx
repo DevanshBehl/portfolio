@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import Lenis from 'lenis'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import ParticleHero from './components/ParticleHero'
 import Skills from './components/Skills'
 import Projects from './components/Projects'
 import Experience from './components/Experience'
@@ -27,16 +28,26 @@ const App = () => {
   }, [])
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <Navbar />
-      <main>
-        <Hero />
-        <Skills />
-        <Projects />
-        <Experience />
-        <Contact />
-      </main>
-      <Footer />
+    <div className="min-h-screen text-white bg-[#050505] relative w-full overflow-hidden">
+      {/* Global purple atmospheric gradient behind everything */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{
+          background: 'radial-gradient(ellipse 80% 80% at 50% -20%, rgba(120,80,220,0.12) 0%, rgba(20,10,40,0.05) 50%, transparent 100%)',
+        }}
+      />
+      <div className="relative z-10">
+        <Navbar />
+        <main>
+          <Hero />
+          <ParticleHero />
+          <Skills />
+          <Projects />
+          <Experience />
+          <Contact />
+        </main>
+        <Footer />
+      </div>
     </div>
   )
 }

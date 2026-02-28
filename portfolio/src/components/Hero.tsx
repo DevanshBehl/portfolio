@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import type { Easing } from 'framer-motion'
 import { Spotlight } from '@/components/ui/spotlight-new'
-import { Scales } from '@/components/ui/scales'
 import React, { useCallback, useRef, useEffect, memo } from 'react'
 
 const ease: Easing = [0.16, 1, 0.3, 1]
@@ -141,13 +140,7 @@ const FlowingLightBeam = memo(() => {
                 zIndex: 10,
             }}
         >
-            {/* Atmospheric purple haze behind */}
-            <div
-                className="absolute inset-0"
-                style={{
-                    background: 'radial-gradient(ellipse 30% 60% at 50% 50%, rgba(200,190,240,0.1) 0%, transparent 70%)',
-                }}
-            />
+
 
             {/* Beam container — all beams centered */}
             <div
@@ -197,16 +190,7 @@ const FlowingLightBeam = memo(() => {
                 ))}
             </div>
 
-            {/* Bottom convergence glow */}
-            <div
-                className="absolute bottom-0 left-1/2 pointer-events-none"
-                style={{
-                    width: '30rem',
-                    height: '16rem',
-                    transform: 'translate(-50%, 30%)',
-                    background: 'radial-gradient(ellipse 55% 50% at 50% 20%, rgba(220,210,255,0.15) 0%, rgba(200,190,240,0.05) 40%, transparent 70%)',
-                }}
-            />
+
         </div>
     )
 })
@@ -288,7 +272,7 @@ const Hero = () => {
         <section
             id="hero"
             ref={sectionRef}
-            className="relative min-h-[160vh] w-full bg-[#050505] overflow-hidden flex flex-col pt-[22vh]"
+            className="relative min-h-[160vh] w-full overflow-hidden flex flex-col pt-[22vh]"
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
         >
@@ -453,18 +437,11 @@ const Hero = () => {
                     </div>
                 </div>
 
-                {/* Pixelated Canvas Layout & Laser Beam — Centered on Mobile, right-aligned (80%) on Desktop */}
+                {/* Laser Beam — right-aligned on Desktop */}
                 <div className="relative lg:absolute lg:left-[80%] lg:-translate-x-1/2 lg:top-0">
                     <FlowingLightBeam />
-                    <div className="w-[20rem] h-[20rem] sm:w-[28rem] sm:h-[28rem] rounded-xl shrink-0 border border-white/10 shadow-[0_0_80px_10px_rgba(253,251,247,0.15)] bg-[radial-gradient(ellipse_at_top,_rgba(253,251,247,0.3)_0%,_rgba(253,251,247,0.05)_50%,_rgba(0,0,0,0.6)_100%)] relative z-10 overflow-hidden">
-                        <Scales
-                            orientation="diagonal"
-                            size={12}
-                            color="rgba(253,251,247,0.12)"
-                            className="rounded-xl"
-                        />
-                    </div>
                 </div>
+
             </div>
 
             {/* Scroll indicator */}
