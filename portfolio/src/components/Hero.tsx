@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import type { Easing } from 'framer-motion'
 import { Spotlight } from '@/components/ui/spotlight-new'
-import { PixelatedCanvas } from '@/components/ui/pixelated-canvas'
+import { Scales } from '@/components/ui/scales'
 import React, { useCallback, useRef, useEffect, memo } from 'react'
 
 const ease: Easing = [0.16, 1, 0.3, 1]
@@ -456,18 +456,14 @@ const Hero = () => {
                 {/* Pixelated Canvas Layout & Laser Beam — Centered on Mobile, right-aligned (80%) on Desktop */}
                 <div className="relative lg:absolute lg:left-[80%] lg:-translate-x-1/2 lg:top-0">
                     <FlowingLightBeam />
-                    <PixelatedCanvas
-                        src="/devansh.jpg"
-                        className="w-[20rem] h-[20rem] sm:w-[28rem] sm:h-[28rem] rounded-xl shrink-0 border border-white/10 shadow-[0_0_80px_10px_rgba(253,251,247,0.15)] bg-[radial-gradient(ellipse_at_top,_rgba(253,251,247,0.3)_0%,_rgba(253,251,247,0.05)_50%,_rgba(0,0,0,0.6)_100%)] relative z-10"
-                        objectFit="cover"
-                        responsive={true}
-                        cellSize={3}
-                        dotScale={0.9}
-                        tintColor="#fdfbf7"
-                        tintStrength={0.2}
-                        maxFps={30}
-                        sampleAverage={false}
-                    />
+                    <div className="w-[20rem] h-[20rem] sm:w-[28rem] sm:h-[28rem] rounded-xl shrink-0 border border-white/10 shadow-[0_0_80px_10px_rgba(253,251,247,0.15)] bg-[radial-gradient(ellipse_at_top,_rgba(253,251,247,0.3)_0%,_rgba(253,251,247,0.05)_50%,_rgba(0,0,0,0.6)_100%)] relative z-10 overflow-hidden">
+                        <Scales
+                            orientation="diagonal"
+                            size={12}
+                            color="rgba(253,251,247,0.12)"
+                            className="rounded-xl"
+                        />
+                    </div>
                 </div>
             </div>
 
