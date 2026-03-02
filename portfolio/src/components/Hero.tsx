@@ -44,7 +44,7 @@ const NebulaCloud = memo(() => {
                 <ellipse cx="50%" cy="50%" rx="42%" ry="38%" fill="url(#nebula1)" filter="url(#f1)" />
             </svg>
 
-            {/* ── Secondary blob (accent, cooler) ── */}
+            {/* ── idea Secondary blob (accent, cooler) ── */}
             <svg
                 width="500"
                 height="280"
