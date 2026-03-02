@@ -649,12 +649,12 @@ const Hero = () => {
                 ═══════════════════════════════════════════════════════ */}
             <div className="relative z-30 w-full px-6 sm:px-10 lg:px-16 mb-32">
                 {/* Laser Beam — positioned to fall onto the tablet from above */}
-                <div className="absolute right-[15%] top-0 z-40">
+                <div className="absolute right-[15%] top-0 z-40 hidden md:block">
                     <FlowingLightBeam />
                 </div>
 
                 {/* Horizontal Beam — left side, 20% up from bottom */}
-                <div className="absolute left-0 bottom-[20%] z-20 h-[100px] w-6 sm:w-10 lg:w-16 overflow-visible">
+                <div className="absolute left-0 bottom-[20%] z-20 h-[100px] w-6 sm:w-10 lg:w-16 overflow-visible hidden md:block">
                     <HorizontalLightBeam />
                 </div>
 

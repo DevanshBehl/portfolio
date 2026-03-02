@@ -22,14 +22,13 @@ const Footer = () => {
                         <li><a href="#hero" className="hover:text-white transition-colors">Home</a></li>
                         <li><a href="#skills" className="hover:text-white transition-colors">Skills</a></li>
                         <li><a href="#projects" className="hover:text-white transition-colors">Projects</a></li>
-                        <li><a href="#experience" className="hover:text-white transition-colors">Experience</a></li>
                         <li><a href="#contact" className="hover:text-white transition-colors">Contact</a></li>
                     </ul>
                     <ul className="flex flex-col gap-4">
                         <li><a href="https://github.com/DevanshBehl" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a></li>
-                        <li><a href="https://linkedin.com/in/devansh-behl" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">LinkedIn</a></li>
-                        <li><a href="https://instagram.com/devanshbehl" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Instagram</a></li>
-                        <li><a href="mailto:[devanshbhel@gmail.com" className="hover:text-white transition-colors">Email</a></li>
+                        <li><a href="https://www.linkedin.com/in/devansh-behl-216bba227" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">LinkedIn</a></li>
+                        <li><a href="https://instagram.com/devansh_behl_" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Instagram</a></li>
+                        <li><a href="mailto:devanshbhel@gmail.com" className="hover:text-white transition-colors">Email</a></li>
                     </ul>
                 </div>
             </div>

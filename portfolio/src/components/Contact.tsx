@@ -122,8 +122,8 @@ const contactLinks: ContactLink[] = [
     },
     {
         label: 'LinkedIn',
-        value: 'linkedin.com/in/devansh-behl',
-        href: 'https://linkedin.com/in/devansh-behl',
+        value: 'linkedin.com/in/devansh-behl-216bba227',
+        href: 'https://www.linkedin.com/in/devansh-behl-216bba227',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -297,10 +297,11 @@ const Contact = () => {
     const isInView = useInView(sectionRef, { once: true, margin: '-80px' })
 
     const initGrid = useCallback((w: number, h: number) => {
-        const cols = Math.floor(w / GRID_SPACING)
-        const rows = Math.floor(h / GRID_SPACING)
-        const offsetX = (w - (cols - 1) * GRID_SPACING) / 2
-        const offsetY = (h - (rows - 1) * GRID_SPACING) / 2
+        const currentSpacing = window.innerWidth < 768 ? 80 : GRID_SPACING
+        const cols = Math.floor(w / currentSpacing)
+        const rows = Math.floor(h / currentSpacing)
+        const offsetX = (w - (cols - 1) * currentSpacing) / 2
+        const offsetY = (h - (rows - 1) * currentSpacing) / 2
         const particles: Particle[] = []
 
         for (let row = 0; row < rows; row++) {
@@ -510,12 +511,12 @@ const Contact = () => {
             >
                 <canvas
                     ref={canvasRef}
+                    className="hidden md:block"
                     style={{
                         position: 'absolute',
                         inset: 0,
                         width: '100%',
                         height: '100%',
-                        display: 'block',
                     }}
                 />
 
