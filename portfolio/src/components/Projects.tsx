@@ -1,48 +1,7 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-
-interface Project {
-    title: string
-    description: string
-    techStack: string[]
-    github: string
-    demo: string
-}
-
-const projects: Project[] = [
-    {
-        title: 'LAMDA Analytics',
-        description:
-            'AI Industrial Analytics Platform — Winner, Creonix ’25 (Nokia). Backend API developer in 4-member team building real-time dashboards. Developed ingestion APIs processing 10k+ events/hour with indexed MongoDB storage. Optimized query performance by 35% via schema design and aggregation tuning. Integrated FastAPI ML inference + MapboxGL geospatial heatmaps with live WebSocket streaming.',
-        techStack: ['Next.js', 'Tailwind', 'MapboxGL', 'Node.js', 'FastAPI'],
-        github: 'https://github.com/DevanshBehl',
-        demo: '#',
-    },
-    {
-        title: 'CodeNexus',
-        description:
-            'Real-Time Technical Interview Platform with a Distributed Coding Environment. Built multi-language IDE with Docker-isolated execution enforcing CPU, memory, and time constraints. Architected horizontally scalable execution workers using AWS Auto Scaling Groups (ASG) for dynamic load handling. Implemented WebSocket streaming with Redis Pub/Sub for socket scaling and P2P WebRTC video conferencing.',
-        techStack: ['WebRTC', 'WebSocket', 'Docker', 'Redis', 'AWS ASG'],
-        github: 'https://github.com/DevanshBehl',
-        demo: '#',
-    },
-    {
-        title: 'Alerion AI',
-        description:
-            'Real-Time Anomaly Detection with Kafka + WebSocket Distributed Architecture. Designed scalable event-driven architecture with Edge producers and Fog-layer processing via Apache Kafka. Implemented partitioned Kafka topics and consumer groups for fault-tolerant ingestion. Integrated ML inference services and built a WebSocket-powered React dashboard.',
-        techStack: ['Kafka', 'WebSocket', 'React', 'Node.js', 'ML'],
-        github: 'https://github.com/DevanshBehl',
-        demo: '#',
-    },
-    {
-        title: 'AgeisSign',
-        description:
-            'Secure Asymmetric Document Signing Platform leveraging Edwards Curve Cryptography. Built a tamper-proof document signing platform using Ed25519 asymmetric cryptography for metadata signing. Engineered a hash-based deduplication system to prevent duplicate submissions and implemented an end-to-end signature verification pipeline.',
-        techStack: ['Ed25519', 'Node.js', 'React', 'Cryptography'],
-        github: 'https://github.com/DevanshBehl',
-        demo: '#',
-    },
-]
+import { Link } from 'react-router-dom'
+import { projects } from '../data/projects'
 
 
 const ArrowIcon = () => (
@@ -142,6 +101,12 @@ const Projects = () => {
 
                                 {/* Links */}
                                 <div className="flex items-center gap-6 mt-auto">
+                                    <Link
+                                        to={`/projects/${project.id}`}
+                                        className="flex items-center gap-1.5 text-[#666] text-xs font-mono uppercase tracking-widest transition-colors duration-300 hover:text-white group/link"
+                                    >
+                                        [ View Details <ArrowIcon /> ]
+                                    </Link>
                                     <a
                                         href={project.github}
                                         target="_blank"
